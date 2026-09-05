@@ -142,7 +142,7 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _selectedCategory,
+              initialValue: _selectedCategory,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: AppTheme.surfaceVariantLight,

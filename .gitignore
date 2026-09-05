@@ -93,3 +93,5 @@ app.*.map.json
 
 
 SpendSense_Project_Report.md
+claude artifacts/
+claude chat.pdf
