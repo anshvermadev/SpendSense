@@ -15,8 +15,68 @@ class AppState extends ChangeNotifier {
 
   Future<void> init() async {
     await _db.init();
+    await _sanitizeLegacyTransactions();
     _initialized = true;
     notifyListeners();
+  }
+
+  Future<void> _sanitizeLegacyTransactions() async {
+    bool dirty = false;
+    for (final txn in _db.allTransactions) {
+      final lowerMerch = txn.merchant.toLowerCase();
+      final lowerRaw = txn.rawText.toLowerCase();
+
+      // Fix Indian Railways / IRCTC if wrongly classified
+      if (lowerMerch.contains('railway') ||
+          lowerMerch.contains('irctc') ||
+          lowerRaw.contains('indian railways') ||
+          lowerRaw.contains('irctc') ||
+          lowerRaw.contains('railway')) {
+        if (txn.category != 'Transport' || txn.subcategory != 'Train') {
+          final updated = Transaction(
+            id: txn.id,
+            date: txn.date,
+            amount: txn.amount,
+            type: txn.type,
+            paymentMode: txn.paymentMode,
+            merchant: lowerMerch.contains('irctc') ? 'IRCTC' : 'Indian Railways',
+            category: 'Transport',
+            subcategory: 'Train',
+            source: txn.source,
+            rawText: txn.rawText,
+            accountNo: txn.accountNo,
+            bankRefNo: txn.bankRefNo,
+            status: txn.status,
+            isSubscription: txn.isSubscription,
+          );
+          _db.replaceTransactionInList(updated);
+          dirty = true;
+        }
+      } else if (txn.category.toLowerCase().contains('friend')) {
+        // Fix any other legacy 'Friends & Family' / 'Friend' categories to canonical 'Personal'
+        final updated = Transaction(
+          id: txn.id,
+          date: txn.date,
+          amount: txn.amount,
+          type: txn.type,
+          paymentMode: txn.paymentMode,
+          merchant: txn.merchant,
+          category: 'Personal',
+          subcategory: txn.subcategory.isNotEmpty ? txn.subcategory : 'Peer Transfer',
+          source: txn.source,
+          rawText: txn.rawText,
+          accountNo: txn.accountNo,
+          bankRefNo: txn.bankRefNo,
+          status: txn.status,
+          isSubscription: txn.isSubscription,
+        );
+        _db.replaceTransactionInList(updated);
+        dirty = true;
+      }
+    }
+    if (dirty) {
+      await _db.saveAllTransactions();
+    }
   }
 
   Future<void> refresh() async {
@@ -108,46 +168,50 @@ class AppState extends ChangeNotifier {
 
   Future<void> reprocessSmsTransactions() async {
     final parser = CategorizationService();
-    for (var txn in _db.allTransactions) {
+    bool dirty = false;
+    for (final txn in _db.allTransactions) {
       if (txn.source == 'SMS' && txn.rawText.isNotEmpty) {
         final parsed = parser.parseSms(txn.rawText, 'Unknown');
         if (parsed != null) {
           final newMerchant = parsed['merchant'] as String? ?? txn.merchant;
           final newAcct = parsed['accountNo'] as String? ?? '';
           final newRef = parsed['bankRefNo'] as String? ?? '';
-          
-          final shouldUpdateCat = txn.category == 'Uncategorised' || txn.category == 'Uncategorized';
-          final newCat = shouldUpdateCat ? parser.categorize(newMerchant) : txn.category;
-          final newSub = shouldUpdateCat ? parser.getSubcategory(newMerchant) : txn.subcategory;
+          final newCat = parsed['category'] as String? ?? parser.categorize(newMerchant);
+          final newSub = parsed['subcategory'] as String? ?? parser.getSubcategory(newMerchant);
 
-          await _db.updateTransactionCategory(txn.id, newCat, newSub);
-          
-          // Dirty update for other fields directly in DB instance for this one-off migration
-          final idx = _db.allTransactions.indexWhere((t) => t.id == txn.id);
-          if (idx != -1) {
-            final old = _db.allTransactions[idx];
-            _db.allTransactions[idx] = Transaction(
-              id: old.id,
-              date: old.date,
-              amount: old.amount,
-              type: old.type,
-              paymentMode: old.paymentMode,
-              merchant: newMerchant,
-              category: newCat,
-              subcategory: newSub,
-              source: old.source,
-              rawText: old.rawText,
-              accountNo: newAcct.isNotEmpty ? newAcct : old.accountNo,
-              bankRefNo: newRef.isNotEmpty ? newRef : old.bankRefNo,
-              status: old.status,
-              isSubscription: old.isSubscription,
-            );
-          }
+          final isKnownRule = newCat != 'Uncategorised' && newCat.isNotEmpty;
+          final isLegacyCat = txn.category == 'Uncategorised' ||
+              txn.category == 'Uncategorized' ||
+              txn.category.toLowerCase().contains('friend');
+
+          // Always update if legacy, or if parser found a recognized category
+          final finalCat = (isLegacyCat || isKnownRule) ? newCat : txn.category;
+          final finalSub = (isLegacyCat || isKnownRule) ? newSub : txn.subcategory;
+
+          final updated = Transaction(
+            id: txn.id,
+            date: txn.date,
+            amount: txn.amount,
+            type: txn.type,
+            paymentMode: txn.paymentMode,
+            merchant: newMerchant,
+            category: finalCat,
+            subcategory: finalSub,
+            source: txn.source,
+            rawText: txn.rawText,
+            accountNo: newAcct.isNotEmpty ? newAcct : txn.accountNo,
+            bankRefNo: newRef.isNotEmpty ? newRef : txn.bankRefNo,
+            status: txn.status,
+            isSubscription: txn.isSubscription,
+          );
+          _db.replaceTransactionInList(updated);
+          dirty = true;
         }
       }
     }
-    // Force save all
-    await _db.deleteTransaction('trigger_save'); // hack to save without exposing private method, though we could just notify
+    if (dirty) {
+      await _db.saveAllTransactions();
+    }
     notifyListeners();
   }
 

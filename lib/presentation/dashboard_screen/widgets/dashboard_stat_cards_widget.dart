@@ -62,38 +62,169 @@ class _DashboardStatCardsWidgetState extends State<DashboardStatCardsWidget>
           widget.year,
         );
 
+        final netSavings = totalIncome - totalExpense;
+        final daysInMonth = DateTime(widget.year, widget.month + 1, 0).day;
+        final dailyAvg = daysInMonth > 0 ? totalExpense / daysInMonth : 0.0;
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: AnimatedBuilder(
             animation: _animation,
             builder: (context, _) {
-              return Row(
+              return Column(
                 children: [
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Total Income',
-                      amount: totalIncome * _animation.value,
-                      gradient: const LinearGradient(
-                        colors: [AppTheme.primary, Color(0xFF9B8FF8)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Total Income',
+                          amount: totalIncome * _animation.value,
+                          gradient: const LinearGradient(
+                            colors: [AppTheme.primary, Color(0xFF9B8FF8)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          accountLabel: 'All Inflows',
+                          maskedNum: '••••  ••••',
+                        ),
                       ),
-                      accountLabel: 'All Sources',
-                      maskedNum: '••••  ••••',
-                    ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Total Expense',
+                          amount: totalExpense * _animation.value,
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFFF6B45), Color(0xFFFF9A7A)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          accountLabel: 'All Spends',
+                          maskedNum: '••••  ••••',
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Total Expense',
-                      amount: totalExpense * _animation.value,
-                      gradient: const LinearGradient(
-                        colors: [AppTheme.secondary, Color(0xFFFF9A7A)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      accountLabel: 'All Categories',
-                      maskedNum: '••••  ••••',
+                  const SizedBox(height: 12),
+                  // Secondary KPI Strip: Net Savings & Daily Average
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.surfaceLight,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFEDEDF4)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(6),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: (netSavings >= 0
+                                          ? const Color(0xFF00B894)
+                                          : AppTheme.errorColor)
+                                      .withAlpha(25),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  netSavings >= 0
+                                      ? Icons.savings_outlined
+                                      : Icons.trending_down_rounded,
+                                  size: 16,
+                                  color: netSavings >= 0
+                                      ? const Color(0xFF00B894)
+                                      : AppTheme.errorColor,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Net Balance',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppTheme.textSecondary,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${netSavings >= 0 ? '+' : ''}₹${_fmt(netSavings * _animation.value)}',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w800,
+                                        color: netSavings >= 0
+                                            ? const Color(0xFF00B894)
+                                            : AppTheme.errorColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 1,
+                          height: 28,
+                          color: const Color(0xFFEEEEF4),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primary.withAlpha(25),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.calendar_today_rounded,
+                                  size: 16,
+                                  color: AppTheme.primary,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Daily Average',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppTheme.textSecondary,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₹${_fmt(dailyAvg * _animation.value)}/d',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppTheme.textPrimary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -104,6 +235,13 @@ class _DashboardStatCardsWidgetState extends State<DashboardStatCardsWidget>
       },
     );
   }
+
+  String _fmt(double amount) => amount
+      .toStringAsFixed(0)
+      .replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (m) => '${m[1]},',
+      );
 }
 
 class _StatCard extends StatelessWidget {

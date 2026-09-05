@@ -47,6 +47,9 @@ class CategoryConstants {
     'Uncategorised',
   ];
 
+  /// Canonical all categories list
+  static const List<String> allCategories = allCategoriesWithUncategorised;
+
   /// Maps categories to distinctive, modern Flutter icons
   static const Map<String, IconData> categoryIcons = {
     'Food': Icons.fastfood_outlined,
@@ -119,6 +122,12 @@ class CategoryConstants {
     }
     if (lower == 'uncategorized' || lower == 'uncategorised') {
       return 'Uncategorised';
+    }
+    if (lower == 'friends & family' || lower == 'friends' || lower == 'friend') {
+      return 'Personal';
+    }
+    if (lower == 'transportation') {
+      return 'Transport';
     }
     for (final cat in primaryCategories) {
       if (cat.toLowerCase() == lower) return cat;

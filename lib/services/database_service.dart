@@ -429,6 +429,24 @@ class DatabaseService {
     await _saveTransactions();
   }
 
+  Future<void> updateTransactionFull(Transaction updated) async {
+    final idx = _transactions.indexWhere((t) => t.id == updated.id);
+    if (idx == -1) return;
+    _transactions[idx] = updated;
+    await _saveTransactions();
+  }
+
+  void replaceTransactionInList(Transaction updated) {
+    final idx = _transactions.indexWhere((t) => t.id == updated.id);
+    if (idx != -1) {
+      _transactions[idx] = updated;
+    }
+  }
+
+  Future<void> saveAllTransactions() async {
+    await _saveTransactions();
+  }
+
   // ─── Budgets ─────────────────────────────────────────────────────────────────
 
   List<Budget> getBudgetsForMonth(int month, int year) {

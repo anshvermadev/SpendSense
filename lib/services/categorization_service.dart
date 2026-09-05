@@ -63,7 +63,11 @@ class CategorizationService {
       'bus',
       'irctc',
       'railway',
+      'railways',
+      'indian railways',
       'train',
+      'train ticket',
+      'pnr',
       'flight',
       'indigo',
       'spicejet',
@@ -231,7 +235,10 @@ class CategorizationService {
     'uber': 'Cab',
     'rapido': 'Bike Taxi',
     'metro': 'Public Transport',
+    'indian railways': 'Train',
+    'railway': 'Train',
     'irctc': 'Train',
+    'train': 'Train',
     'indigo': 'Flight',
     'petrol': 'Fuel',
     'fuel': 'Fuel',
@@ -262,6 +269,13 @@ class CategorizationService {
     final lower = cleaned.toLowerCase();
 
     // 3. Known alias mappings (Tier 1 Normalization)
+    if (lower.contains('indian railway') ||
+        lower.contains('indian railways') ||
+        lower.contains('railway') ||
+        lower.contains('irctc')) {
+      if (lower.contains('irctc')) return 'IRCTC';
+      return 'Indian Railways';
+    }
     if (lower.contains('dmart') ||
         lower.contains('avenue supermarts') ||
         lower.contains('avenue su')) {
@@ -301,8 +315,30 @@ class CategorizationService {
     final lower = normalized.toLowerCase();
 
     // Tier 1: Deterministic High-Priority Overrides
+    if (lower.contains('railway') ||
+        lower.contains('irctc') ||
+        lower.contains('train')) {
+      return 'Transport';
+    }
     if (lower.contains('dmart')) {
       return 'Groceries';
+    }
+    if (lower.contains('bikaner') || lower.contains('bikanervala')) {
+      return 'Food';
+    }
+    if (lower.contains('swiggy') || lower.contains('zomato')) {
+      return 'Food';
+    }
+    if (lower.contains('blinkit') ||
+        lower.contains('zepto') ||
+        lower.contains('bigbasket')) {
+      return 'Groceries';
+    }
+    if (lower.contains('ola') ||
+        lower.contains('uber') ||
+        lower.contains('rapido') ||
+        lower.contains('metro')) {
+      return 'Transport';
     }
 
     // Tier 2: On-Device TFLite ML Model

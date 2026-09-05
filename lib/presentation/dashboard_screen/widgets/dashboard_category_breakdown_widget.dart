@@ -123,6 +123,8 @@ class _DashboardCategoryBreakdownWidgetState
     );
   }
 
+  bool _showAllCategories = true;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppState>(
@@ -131,18 +133,38 @@ class _DashboardCategoryBreakdownWidgetState
           widget.month,
           widget.year,
         );
-        final trackedCategories = appState.userSettings.trackedCategories;
 
-        // Build list: tracked categories + any categories with actual spend
-        final allCats = <String>{...trackedCategories};
-        allCats.addAll(categorySpend.keys.where((k) => k != 'Income'));
-        final categories = allCats.toList()
-          ..sort((a, b) {
-            final spendA = categorySpend[a] ?? 0.0;
-            final spendB = categorySpend[b] ?? 0.0;
-            if (spendA != spendB) return spendB.compareTo(spendA);
-            return a.compareTo(b);
-          });
+        // All non-income categories from canonical list
+        final allCanonical = CategoryConstants.allCategories
+            .where((k) => k != 'Income')
+            .toList();
+
+        final activeCats = allCanonical
+            .where((c) => (categorySpend[c] ?? 0.0) > 0)
+            .toList()
+          ..sort((a, b) =>
+              (categorySpend[b] ?? 0.0).compareTo(categorySpend[a] ?? 0.0));
+
+        final displayedCategories = _showAllCategories
+            ? (allCanonical.toList()
+              ..sort((a, b) {
+                final spendA = categorySpend[a] ?? 0.0;
+                final spendB = categorySpend[b] ?? 0.0;
+                if (spendA > 0 || spendB > 0) {
+                  return spendB.compareTo(spendA);
+                }
+                return a.compareTo(b);
+              }))
+            : activeCats;
+
+        final totalBudgeted = displayedCategories.fold<double>(
+          0.0,
+          (sum, c) => sum + appState.getBudget(c, widget.month, widget.year),
+        );
+        final totalSpent = displayedCategories.fold<double>(
+          0.0,
+          (sum, c) => sum + (categorySpend[c] ?? 0.0),
+        );
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -163,32 +185,183 @@ class _DashboardCategoryBreakdownWidgetState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Expenses',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary.withAlpha(20),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.category_rounded,
+                              size: 18,
+                              color: AppTheme.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Category Budgets',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.textPrimary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  '${displayedCategories.length} categories listed',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      '${categories.length} categories',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.textSecondary,
+                    const SizedBox(width: 8),
+                    // Filter toggle
+                    Container(
+                      padding: const EdgeInsets.all(2.5),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceVariantLight,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () => setState(() => _showAllCategories = true),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _showAllCategories
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: _showAllCategories
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withAlpha(10),
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: Text(
+                                'All (15)',
+                                style: TextStyle(
+                                  fontSize: 10.5,
+                                  fontWeight: _showAllCategories
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  color: _showAllCategories
+                                      ? AppTheme.primary
+                                      : AppTheme.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => setState(() => _showAllCategories = false),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: !_showAllCategories
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: !_showAllCategories
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withAlpha(10),
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: Text(
+                                'Active (${activeCats.length})',
+                                style: TextStyle(
+                                  fontSize: 10.5,
+                                  fontWeight: !_showAllCategories
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  color: !_showAllCategories
+                                      ? AppTheme.primary
+                                      : AppTheme.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
+
+                if (totalBudgeted > 0) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF7F8FC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFEDEDF4)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total Budgeted: ₹${_fmt(totalBudgeted)}',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textSecondary,
+                          ),
+                        ),
+                        Text(
+                          'Spent: ₹${_fmt(totalSpent)}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: totalSpent > totalBudgeted
+                                ? AppTheme.errorColor
+                                : AppTheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 16),
-                if (categories.isEmpty)
+                if (displayedCategories.isEmpty)
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Text(
-                        'No expense data for this month',
+                        'No active expenses for this month',
                         style: TextStyle(
                           fontSize: 13,
                           color: AppTheme.textSecondary,
@@ -197,9 +370,9 @@ class _DashboardCategoryBreakdownWidgetState
                     ),
                   )
                 else
-                  ...categories.asMap().entries.map((entry) {
+                  ...displayedCategories.asMap().entries.map((entry) {
                     final cat = entry.key;
-                    final name = categories[cat];
+                    final name = displayedCategories[cat];
                     final spent = categorySpend[name] ?? 0.0;
                     final budget = appState.getBudget(
                       name,

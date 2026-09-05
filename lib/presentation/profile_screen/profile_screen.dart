@@ -591,9 +591,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
+      builder: (sheetCtx) => Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom: MediaQuery.of(sheetCtx).viewInsets.bottom,
         ),
         child: Container(
           margin: const EdgeInsets.all(16),
@@ -650,7 +650,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       trackedCategories: settings.trackedCategories,
                     );
                     await appState.saveUserSettings(updated);
-                    if (mounted) Navigator.pop(context);
+                    if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
@@ -677,7 +677,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final csv = appState.exportCsv();
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           'Export Data',
@@ -710,7 +710,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(dialogCtx).pop(),
             child: const Text('Close'),
           ),
         ],
@@ -721,7 +721,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _confirmDeleteAll(AppState appState) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           'Delete All Data',
@@ -736,13 +736,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(dialogCtx).pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
               await appState.deleteAllData();
-              if (mounted) Navigator.pop(context);
+              if (dialogCtx.mounted) Navigator.of(dialogCtx).pop();
             },
             child: const Text(
               'Delete',
@@ -757,7 +757,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showImportInfo() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           'Bank Statement Import',
@@ -769,7 +769,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(dialogCtx).pop(),
             child: const Text('Got it'),
           ),
         ],
@@ -780,19 +780,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showCategorizationInfo() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           'How Categorisation Works',
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
         content: const Text(
-          'SpendSense uses a keyword dictionary to match merchant names to categories. For example, "Swiggy" → Food, "Ola" → Transport.\n\nIf a transaction is miscategorised, you can correct it in History. SpendSense will remember your correction for future transactions from the same merchant.\n\nNo AI or internet connection is required — everything runs on your device.',
+          'SpendSense uses an on-device TFLite model and intelligent alias normalization to match transactions to 15 categories automatically.\n\nIf a transaction is miscategorised, you can correct it in History. SpendSense will remember your correction for future transactions from the same merchant.\n\nNo AI or internet connection is required — everything runs on your device.',
           style: TextStyle(color: AppTheme.textSecondary, height: 1.5),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(dialogCtx).pop(),
             child: const Text('Got it'),
           ),
         ],
@@ -809,7 +809,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => StatefulBuilder(
+      builder: (sheetCtx) => StatefulBuilder(
         builder: (ctx, setSheetState) => Container(
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(24),
@@ -882,7 +882,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       trackedCategories: selected.toList(),
                     );
                     await appState.saveUserSettings(updated);
-                    if (mounted) Navigator.pop(context);
+                    if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,

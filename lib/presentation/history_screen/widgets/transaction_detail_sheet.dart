@@ -30,11 +30,12 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
   void initState() {
     super.initState();
     _selectedCategory = widget.transaction.category;
-    _categories = widget.availableCategories.toSet().toList();
-    if (!_categories.contains(_selectedCategory)) {
-      _categories.add(_selectedCategory);
-    }
-    _categories.sort();
+    final catSet = <String>{
+      ...CategoryConstants.allCategories,
+      ...widget.availableCategories,
+      _selectedCategory,
+    };
+    _categories = catSet.toList()..sort();
   }
 
   String _fmt(double val) {
@@ -90,6 +91,139 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
     );
   }
 
+  void _showCategoryPickerSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetCtx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(sheetCtx).size.height * 0.75,
+          ),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE0E0E8),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Select Category',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Choose the best fit for this expense',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, size: 24),
+                      color: AppTheme.textSecondary,
+                      tooltip: 'Close',
+                      onPressed: () => Navigator.of(sheetCtx).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: Color(0xFFEEEEF4)),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  itemCount: _categories.length,
+                  separatorBuilder: (ctx, i) => const Divider(
+                    height: 1,
+                    color: Color(0xFFF4F4F8),
+                    indent: 48,
+                  ),
+                  itemBuilder: (_, index) {
+                    final cat = _categories[index];
+                    final isSelected = cat == _selectedCategory;
+                    final color = CategoryConstants.getColor(cat);
+                    final icon = CategoryConstants.getIcon(cat);
+
+                    return InkWell(
+                      onTap: () {
+                        setState(() => _selectedCategory = cat);
+                        widget.onCategoryChanged(cat, widget.transaction.subcategory);
+                        Navigator.of(sheetCtx).pop();
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: color.withAlpha(28),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(icon, color: color, size: 20),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Text(
+                                cat,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                  color: isSelected ? AppTheme.primary : AppTheme.textPrimary,
+                                ),
+                              ),
+                            ),
+                            if (isSelected)
+                              const Icon(
+                                Icons.check_circle_rounded,
+                                color: AppTheme.primary,
+                                size: 20,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = widget.transaction;
@@ -142,48 +276,86 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
               ),
             ),
             const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              initialValue: _selectedCategory,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: AppTheme.surfaceVariantLight,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            InkWell(
+              onTap: () => _showCategoryPickerSheet(context),
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceVariantLight,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: CategoryConstants.getColor(_selectedCategory).withAlpha(80),
+                    width: 1.2,
+                  ),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: CategoryConstants.getColor(_selectedCategory).withAlpha(35),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        CategoryConstants.getIcon(_selectedCategory),
+                        size: 18,
+                        color: CategoryConstants.getColor(_selectedCategory),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _selectedCategory,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          const Text(
+                            'Tap to change category',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppTheme.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primary.withAlpha(20),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Change',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.primary,
+                            ),
+                          ),
+                          SizedBox(width: 2),
+                          Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 16,
+                            color: AppTheme.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              items: _categories
-                  .map((c) => DropdownMenuItem(
-                        value: c,
-                        child: Row(
-                          children: [
-                            Icon(
-                              CategoryConstants.getIcon(c),
-                              size: 16,
-                              color: CategoryConstants.getColor(c),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              c,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-              onChanged: (v) {
-                if (v != null) {
-                  setState(() => _selectedCategory = v);
-                  widget.onCategoryChanged(v, t.subcategory);
-                }
-              },
             ),
             const SizedBox(height: 16),
             

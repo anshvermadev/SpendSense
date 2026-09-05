@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import './widgets/dashboard_category_breakdown_widget.dart';
+import './widgets/dashboard_category_trend_widget.dart';
 import './widgets/dashboard_header_widget.dart';
 import './widgets/dashboard_insights_widget.dart';
+import './widgets/dashboard_pie_chart_widget.dart';
 import './widgets/dashboard_stat_cards_widget.dart';
 import './widgets/dashboard_subscriptions_widget.dart';
 
@@ -14,9 +16,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // TODO: Replace with [Riverpod/Bloc] for production
-  int _selectedMonth = 7; // July
-  int _selectedYear = 2026;
+  int _selectedMonth = DateTime.now().month;
+  int _selectedYear = DateTime.now().year;
 
   void _onMonthChanged(int month, int year) {
     setState(() {
@@ -47,28 +48,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onMonthChanged: _onMonthChanged,
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
         SliverToBoxAdapter(
           child: DashboardStatCardsWidget(
             month: _selectedMonth,
             year: _selectedYear,
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+        SliverToBoxAdapter(
+          child: DashboardPieChartWidget(
+            month: _selectedMonth,
+            year: _selectedYear,
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+        SliverToBoxAdapter(
+          child: DashboardCategoryTrendWidget(
+            month: _selectedMonth,
+            year: _selectedYear,
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
         SliverToBoxAdapter(
           child: DashboardCategoryBreakdownWidget(
             month: _selectedMonth,
             year: _selectedYear,
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
         SliverToBoxAdapter(
           child: DashboardInsightsWidget(
             month: _selectedMonth,
             year: _selectedYear,
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
         const SliverToBoxAdapter(child: DashboardSubscriptionsWidget()),
         const SliverToBoxAdapter(child: SizedBox(height: 140)),
       ],
@@ -87,6 +102,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 20),
           DashboardStatCardsWidget(month: _selectedMonth, year: _selectedYear),
+          const SizedBox(height: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: DashboardPieChartWidget(
+                  month: _selectedMonth,
+                  year: _selectedYear,
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: DashboardCategoryTrendWidget(
+                  month: _selectedMonth,
+                  year: _selectedYear,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,

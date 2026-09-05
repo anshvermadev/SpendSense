@@ -59,6 +59,50 @@ void main() {
       expect(result['accountNo'], equals('XX888'));
       expect(result['bankRefNo'], equals('620083461039'));
     });
+
+    test('normalizeMerchant normalizes Indian Railways and IRCTC variants', () {
+      expect(categorizer.normalizeMerchant('Indian Railways'), equals('Indian Railways'));
+      expect(categorizer.normalizeMerchant('indian railway'), equals('Indian Railways'));
+      expect(categorizer.normalizeMerchant('IRCTC'), equals('IRCTC'));
+      expect(categorizer.normalizeMerchant('IRCTC Train'), equals('IRCTC'));
+      expect(categorizer.normalizeMerchant('Northern Railway'), equals('Indian Railways'));
+    });
+
+    test('categorize and getSubcategory correctly identify Indian Railways as Transport and Train', () {
+      expect(categorizer.categorize('Indian Railways'), equals('Transport'));
+      expect(categorizer.categorize('IRCTC'), equals('Transport'));
+      expect(categorizer.categorize('Northern Railway'), equals('Transport'));
+      expect(categorizer.getSubcategory('Indian Railways'), equals('Train'));
+      expect(categorizer.getSubcategory('IRCTC'), equals('Train'));
+    });
+
+    test('parseSms correctly extracts and categorizes Indian Railways SMS', () {
+      const smsRailways =
+          'ICICI Bank Acct XX888 debited for Rs 14.55 on 25-Jul-26; Indian Railways credited. UPI:091401545786. Call 18002662 for dispute. SMS BLOCK 888 to 9215676766.';
+      final result = categorizer.parseSms(smsRailways, 'ICICI');
+      print('================================================================');
+      print('  INDIAN RAILWAYS TEST RESULT');
+      print('================================================================');
+      print('  Merchant:      ${result!['merchant']}');
+      print('  Category:      ${result['category']}');
+      print('  Subcategory:   ${result['subcategory']}');
+      print('  Amount:        Rs ${result['amount']}');
+      print('  Type:          ${result['type']}');
+      print('  Payment Mode:  ${result['paymentMode']}');
+      print('  Account No:    ${result['accountNo']}');
+      print('  Bank Ref / ID: ${result['bankRefNo']}');
+      print('================================================================');
+
+      expect(result, isNotNull);
+      expect(result['amount'], equals(14.55));
+      expect(result['type'], equals('debit'));
+      expect(result['merchant'], equals('Indian Railways'));
+      expect(result['category'], equals('Transport'));
+      expect(result['subcategory'], equals('Train'));
+      expect(result['paymentMode'], equals('UPI'));
+      expect(result['accountNo'], equals('XX888'));
+      expect(result['bankRefNo'], equals('091401545786'));
+    });
   });
 
   group('MlCategorizationService - Tokenizer & Contract', () {
