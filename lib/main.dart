@@ -6,10 +6,14 @@ import 'package:sizer/sizer.dart';
 import '../core/app_export.dart';
 import '../services/app_state.dart';
 import '../services/sms_service.dart';
+import '../services/ml_categorization_service.dart';
 import '../widgets/custom_error_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize ML Categorization Engine in background
+  MlCategorizationService().init();
 
   // Initialize app state / database
   final appState = AppState();

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/category_constants.dart';
 import '../../../services/app_state.dart';
 import '../../../theme/app_theme.dart';
 import '../../history_screen/widgets/add_transaction_sheet.dart';
@@ -49,36 +50,6 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
     'November',
     'December',
   ];
-
-  static const Map<String, IconData> _categoryIcons = {
-    'Food': Icons.fastfood_outlined,
-    'Groceries': Icons.shopping_basket_outlined,
-    'Transport': Icons.directions_car_outlined,
-    'Shopping': Icons.shopping_bag_outlined,
-    'EMI': Icons.account_balance_outlined,
-    'Subscriptions': Icons.subscriptions_outlined,
-    'Utilities': Icons.electric_bolt_outlined,
-    'Medical': Icons.local_hospital_outlined,
-    'Housing': Icons.home_outlined,
-    'Entertainment': Icons.movie_outlined,
-    'Income': Icons.account_balance_wallet_outlined,
-    'Uncategorised': Icons.help_outline_rounded,
-  };
-
-  static const Map<String, Color> _categoryColors = {
-    'Food': Color(0xFFFF6B45),
-    'Groceries': Color(0xFF00B894),
-    'Transport': Color(0xFF0984E3),
-    'Shopping': Color(0xFF6C5CE7),
-    'EMI': Color(0xFF2D3436),
-    'Subscriptions': Color(0xFF6C3483),
-    'Utilities': Color(0xFFFDCB6E),
-    'Medical': Color(0xFF00B894),
-    'Housing': Color(0xFF74B9FF),
-    'Entertainment': Color(0xFFE17055),
-    'Income': Color(0xFF00B894),
-    'Uncategorised': Color(0xFFAAAAAC),
-  };
 
   @override
   void initState() {
@@ -536,7 +507,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
     return Column(
       children: [
         SizedBox(
-          height: 155,
+          height: 165,
           child: AnimatedBuilder(
             animation: _chartAnim,
             builder: (context, _) => BarChart(
@@ -585,7 +556,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                         final isPeak = peakWeekIndex == i;
 
                         return Padding(
-                          padding: const EdgeInsets.only(top: 6),
+                          padding: const EdgeInsets.only(top: 4),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -593,6 +564,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                                 'Wk ${i + 1}',
                                 style: TextStyle(
                                   fontSize: 11,
+                                  height: 1.15,
                                   fontWeight: isSelected || isPeak
                                       ? FontWeight.w800
                                       : FontWeight.w600,
@@ -607,6 +579,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                                 weekLabels[i],
                                 style: TextStyle(
                                   fontSize: 9,
+                                  height: 1.15,
                                   fontWeight: FontWeight.w500,
                                   color: isSelected
                                       ? AppTheme.primary
@@ -617,7 +590,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                           ),
                         );
                       },
-                      reservedSize: 34,
+                      reservedSize: 42,
                     ),
                   ),
                   leftTitles: const AxisTitles(
@@ -756,8 +729,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                         final isTouched = i == _touchedPieIndex;
                         final radius = isTouched ? 22.0 : 16.0;
                         final entry = topCategories[i];
-                        final color =
-                            _categoryColors[entry.key] ?? AppTheme.primary;
+                        final color = CategoryConstants.getColor(entry.key);
 
                         return PieChartSectionData(
                           color: color,
@@ -776,9 +748,8 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                         size: 18,
                         color: _touchedPieIndex >= 0 &&
                                 _touchedPieIndex < topCategories.length
-                            ? (_categoryColors[
-                                    topCategories[_touchedPieIndex].key] ??
-                                AppTheme.primary)
+                            ? CategoryConstants.getColor(
+                                topCategories[_touchedPieIndex].key)
                             : AppTheme.primary,
                       ),
                       const SizedBox(height: 2),
@@ -812,9 +783,8 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                   final ratio =
                       totalExpense > 0 ? (amt / totalExpense).clamp(0.0, 1.0) : 0.0;
                   final percent = (ratio * 100).toStringAsFixed(0);
-                  final icon =
-                      _categoryIcons[cat] ?? Icons.help_outline_rounded;
-                  final color = _categoryColors[cat] ?? AppTheme.primary;
+                  final icon = CategoryConstants.getIcon(cat);
+                  final color = CategoryConstants.getColor(cat);
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 7),

@@ -35,8 +35,8 @@ void backgroundMessageHandler(SmsMessage message) async {
         type: parsed['type'] as String,
         paymentMode: parsed['paymentMode'] as String,
         merchant: parsed['merchant'] as String,
-        category: 'Uncategorized', // Real categorize logic can go here
-        subcategory: '',
+        category: parsed['category'] as String? ?? 'Uncategorised',
+        subcategory: parsed['subcategory'] as String? ?? '',
         source: 'SMS',
         rawText: message.body!,
         accountNo: parsed['accountNo'] as String? ?? '',

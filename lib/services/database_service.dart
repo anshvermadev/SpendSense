@@ -162,10 +162,19 @@ class UserSettings {
     this.smsReadingEnabled = true,
     this.trackedCategories = const [
       'Food',
+      'Groceries',
       'Transport',
       'Shopping',
+      'Fuel',
+      'Entertainment',
       'Subscriptions',
       'Utilities',
+      'Medical',
+      'Housing',
+      'Education',
+      'Travel',
+      'Personal',
+      'EMI',
     ],
   });
 
@@ -188,7 +197,22 @@ class UserSettings {
         (json['trackedCategories'] as List<dynamic>?)
             ?.map((e) => e as String)
             .toList() ??
-        ['Food', 'Transport', 'Shopping', 'Subscriptions', 'Utilities'],
+        const [
+          'Food',
+          'Groceries',
+          'Transport',
+          'Shopping',
+          'Fuel',
+          'Entertainment',
+          'Subscriptions',
+          'Utilities',
+          'Medical',
+          'Housing',
+          'Education',
+          'Travel',
+          'Personal',
+          'EMI',
+        ],
   );
 }
 

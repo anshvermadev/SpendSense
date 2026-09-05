@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/category_constants.dart';
 import '../../../services/app_state.dart';
 import '../../../theme/app_theme.dart';
 
@@ -23,34 +24,6 @@ class _DashboardCategoryBreakdownWidgetState
     extends State<DashboardCategoryBreakdownWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
-  static const Map<String, IconData> _categoryIcons = {
-    'Food': Icons.fastfood_outlined,
-    'Groceries': Icons.shopping_basket_outlined,
-    'Transport': Icons.directions_car_outlined,
-    'Shopping': Icons.shopping_bag_outlined,
-    'EMI': Icons.account_balance_outlined,
-    'Subscriptions': Icons.subscriptions_outlined,
-    'Utilities': Icons.electric_bolt_outlined,
-    'Medical': Icons.local_hospital_outlined,
-    'Housing': Icons.home_outlined,
-    'Entertainment': Icons.movie_outlined,
-    'Uncategorised': Icons.help_outline_rounded,
-  };
-
-  static const Map<String, Color> _categoryColors = {
-    'Food': Color(0xFFFF6B45),
-    'Groceries': Color(0xFF00B894),
-    'Transport': Color(0xFF0984E3),
-    'Shopping': Color(0xFF6C5CE7),
-    'EMI': Color(0xFF2D3436),
-    'Subscriptions': Color(0xFF6C3483),
-    'Utilities': Color(0xFFFDCB6E),
-    'Medical': Color(0xFF00B894),
-    'Housing': Color(0xFF74B9FF),
-    'Entertainment': Color(0xFFE17055),
-    'Uncategorised': Color(0xFFAAAAAC),
-  };
 
   @override
   void initState() {
@@ -163,7 +136,13 @@ class _DashboardCategoryBreakdownWidgetState
         // Build list: tracked categories + any categories with actual spend
         final allCats = <String>{...trackedCategories};
         allCats.addAll(categorySpend.keys.where((k) => k != 'Income'));
-        final categories = allCats.toList()..sort();
+        final categories = allCats.toList()
+          ..sort((a, b) {
+            final spendA = categorySpend[a] ?? 0.0;
+            final spendB = categorySpend[b] ?? 0.0;
+            if (spendA != spendB) return spendB.compareTo(spendA);
+            return a.compareTo(b);
+          });
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -232,9 +211,8 @@ class _DashboardCategoryBreakdownWidgetState
                         : 0.0;
                     final isOver = budget > 0 && spent > budget;
                     final barColor = _barColor(pct, isOver);
-                    final icon =
-                        _categoryIcons[name] ?? Icons.category_outlined;
-                    final color = _categoryColors[name] ?? AppTheme.textMuted;
+                    final icon = CategoryConstants.getIcon(name);
+                    final color = CategoryConstants.getColor(name);
 
                     return _buildCategoryRow(
                       context: context,

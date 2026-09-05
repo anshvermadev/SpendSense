@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/category_constants.dart';
 import '../../../services/database_service.dart';
 import '../../../theme/app_theme.dart';
 
@@ -156,7 +157,26 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
                 ),
               ),
               items: _categories
-                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .map((c) => DropdownMenuItem(
+                        value: c,
+                        child: Row(
+                          children: [
+                            Icon(
+                              CategoryConstants.getIcon(c),
+                              size: 16,
+                              color: CategoryConstants.getColor(c),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              c,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
                   .toList(),
               onChanged: (v) {
                 if (v != null) {

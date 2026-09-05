@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/category_constants.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/app_state.dart';
 import '../../../services/database_service.dart';
@@ -11,36 +12,6 @@ import '../../history_screen/widgets/transaction_detail_sheet.dart';
 
 class HomeTransactionsWidget extends StatelessWidget {
   const HomeTransactionsWidget({super.key});
-
-  static const Map<String, IconData> _categoryIcons = {
-    'Food': Icons.fastfood_outlined,
-    'Groceries': Icons.shopping_basket_outlined,
-    'Transport': Icons.directions_car_outlined,
-    'Shopping': Icons.shopping_bag_outlined,
-    'EMI': Icons.account_balance_outlined,
-    'Subscriptions': Icons.subscriptions_outlined,
-    'Utilities': Icons.electric_bolt_outlined,
-    'Medical': Icons.local_hospital_outlined,
-    'Housing': Icons.home_outlined,
-    'Entertainment': Icons.movie_outlined,
-    'Income': Icons.account_balance_wallet_outlined,
-    'Uncategorised': Icons.help_outline_rounded,
-  };
-
-  static const Map<String, Color> _categoryColors = {
-    'Food': Color(0xFFFF6B45),
-    'Groceries': Color(0xFF00B894),
-    'Transport': Color(0xFF0984E3),
-    'Shopping': Color(0xFF6C5CE7),
-    'EMI': Color(0xFF2D3436),
-    'Subscriptions': Color(0xFF6C3483),
-    'Utilities': Color(0xFFFDCB6E),
-    'Medical': Color(0xFF00B894),
-    'Housing': Color(0xFF74B9FF),
-    'Entertainment': Color(0xFFE17055),
-    'Income': Color(0xFF00B894),
-    'Uncategorised': Color(0xFFAAAAAC),
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -194,8 +165,8 @@ class HomeTransactionsWidget extends StatelessWidget {
     AppState appState,
   ) {
     final isLast = index == total - 1;
-    final icon = _categoryIcons[t.category] ?? Icons.help_outline_rounded;
-    final color = _categoryColors[t.category] ?? AppTheme.textMuted;
+    final icon = CategoryConstants.getIcon(t.category);
+    final color = CategoryConstants.getColor(t.category);
     final dateStr = DateFormat('dd MMM, hh:mm a').format(t.date);
 
     return InkWell(
@@ -207,7 +178,7 @@ class HomeTransactionsWidget extends StatelessWidget {
           backgroundColor: Colors.transparent,
           builder: (_) => TransactionDetailSheet(
             transaction: t,
-            availableCategories: appState.userSettings.trackedCategories,
+            availableCategories: CategoryConstants.allCategoriesWithUncategorised,
             onCategoryChanged: (cat, sub) async {
               await appState.updateTransactionCategory(t.id, cat, sub);
             },

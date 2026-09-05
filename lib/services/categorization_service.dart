@@ -1,4 +1,7 @@
+import 'ml_categorization_service.dart';
+
 class CategorizationService {
+
   static const Map<String, List<String>> _categoryKeywords = {
     'Food': [
       'swiggy',
@@ -243,8 +246,75 @@ class CategorizationService {
     'freelance': 'Freelance',
   };
 
+  /// Cleans and normalizes merchant / entity names for robust classification
+  String normalizeMerchant(String raw) {
+    if (raw.trim().isEmpty || raw.toLowerCase() == 'unknown') return 'Unknown';
+
+    // 1. Remove unwanted punctuation/artifacts at start or end
+    var cleaned = raw.replaceAll(RegExp(r'^[;\s\.\,\-]+|[;\s\.\,\-]+$'), '');
+
+    // 2. Remove common bank SMS noise phrases
+    cleaned = cleaned.replaceAll(
+      RegExp(r'(?:credited|debited|txn|ref|upi:.*|pos\s*\d+)', caseSensitive: false),
+      '',
+    ).trim();
+
+    final lower = cleaned.toLowerCase();
+
+    // 3. Known alias mappings (Tier 1 Normalization)
+    if (lower.contains('dmart') ||
+        lower.contains('avenue supermarts') ||
+        lower.contains('avenue su')) {
+      return 'DMart';
+    }
+    if (lower.contains('bikaner') || lower.contains('bikanervala')) {
+      return 'Bikaner Sweets';
+    }
+    if (lower.contains('amzn') || lower.contains('amazon')) {
+      return 'Amazon';
+    }
+    if (lower.contains('flipkart')) {
+      return 'Flipkart';
+    }
+    if (lower.contains('zomato')) {
+      return 'Zomato';
+    }
+    if (lower.contains('swiggy')) {
+      return 'Swiggy';
+    }
+    if (lower.contains('blinkit')) {
+      return 'Blinkit';
+    }
+    if (lower.contains('zepto')) {
+      return 'Zepto';
+    }
+
+    return cleaned.isEmpty ? raw.trim() : cleaned;
+  }
+
+  /// 3-Tier Categorization:
+  /// Tier 1: Deterministic rules/overrides
+  /// Tier 2: On-Device TFLite ML Model
+  /// Tier 3: Keyword dictionary fallback
   String categorize(String merchant) {
-    final lower = merchant.toLowerCase();
+    final normalized = normalizeMerchant(merchant);
+    final lower = normalized.toLowerCase();
+
+    // Tier 1: Deterministic High-Priority Overrides
+    if (lower.contains('dmart')) {
+      return 'Groceries';
+    }
+
+    // Tier 2: On-Device TFLite ML Model
+    final mlService = MlCategorizationService();
+    if (mlService.isReady) {
+      final prediction = mlService.predict(normalized);
+      if (prediction != null && prediction.categoryConfidence >= 0.50) {
+        return prediction.category;
+      }
+    }
+
+    // Tier 3: Keyword dictionary fallback
     for (final entry in _categoryKeywords.entries) {
       for (final keyword in entry.value) {
         if (lower.contains(keyword)) {
@@ -252,16 +322,64 @@ class CategorizationService {
         }
       }
     }
+
     return 'Uncategorised';
   }
 
+  /// Returns categorization along with ML confidence and metadata
+  Map<String, dynamic> categorizeWithDetails(String merchant) {
+    final normalized = normalizeMerchant(merchant);
+
+    // Check ML prediction
+    final mlService = MlCategorizationService();
+    MlPrediction? mlPrediction;
+    if (mlService.isReady) {
+      mlPrediction = mlService.predict(normalized);
+    }
+
+    final category = categorize(merchant);
+    final subcategory = getSubcategory(merchant);
+
+    return {
+      'category': category,
+      'subcategory': subcategory,
+      'normalizedMerchant': normalized,
+      'mlPrediction': mlPrediction != null
+          ? {
+              'category': mlPrediction.category,
+              'categoryConfidence': mlPrediction.categoryConfidence,
+              'merchant': mlPrediction.merchant,
+              'merchantConfidence': mlPrediction.merchantConfidence,
+            }
+          : null,
+    };
+  }
+
   String getSubcategory(String merchant) {
-    final lower = merchant.toLowerCase();
+    final normalized = normalizeMerchant(merchant);
+    final lower = normalized.toLowerCase();
+
+    // Check subcategory map for normalized merchant
     for (final entry in _subcategoryMap.entries) {
       if (lower.contains(entry.key)) {
         return entry.value;
       }
     }
+
+    // If ML predicted a merchant, check subcategory for predicted merchant
+    final mlService = MlCategorizationService();
+    if (mlService.isReady) {
+      final prediction = mlService.predict(normalized);
+      if (prediction != null) {
+        final predictedLower = prediction.merchant.toLowerCase();
+        for (final entry in _subcategoryMap.entries) {
+          if (predictedLower.contains(entry.key)) {
+            return entry.value;
+          }
+        }
+      }
+    }
+
     return '';
   }
 
@@ -385,10 +503,18 @@ class CategorizationService {
       refNo = refMatch.group(1)?.trim() ?? '';
     }
 
+    final normalized = normalizeMerchant(merchant);
+    final finalMerchant = (normalized.isNotEmpty && normalized != 'Unknown') ? normalized : merchant;
+    final cat = categorize(finalMerchant);
+    final sub = getSubcategory(finalMerchant);
+
     return {
       'amount': amount,
       'type': type,
-      'merchant': merchant,
+      'merchant': finalMerchant,
+      'rawMerchant': merchant,
+      'category': cat,
+      'subcategory': sub,
       'paymentMode': paymentMode,
       'accountNo': accountNo,
       'bankRefNo': refNo,

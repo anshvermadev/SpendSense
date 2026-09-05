@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/category_constants.dart';
 import '../../services/app_state.dart';
 import '../../services/database_service.dart';
 import '../../theme/app_theme.dart';
@@ -29,36 +30,6 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
 
   String? _selectedCategory;
   String? _selectedPaymentMode;
-
-  static const Map<String, IconData> _categoryIcons = {
-    'Food': Icons.fastfood_outlined,
-    'Groceries': Icons.shopping_basket_outlined,
-    'Transport': Icons.directions_car_outlined,
-    'Shopping': Icons.shopping_bag_outlined,
-    'EMI': Icons.account_balance_outlined,
-    'Subscriptions': Icons.subscriptions_outlined,
-    'Utilities': Icons.electric_bolt_outlined,
-    'Medical': Icons.local_hospital_outlined,
-    'Housing': Icons.home_outlined,
-    'Entertainment': Icons.movie_outlined,
-    'Income': Icons.account_balance_wallet_outlined,
-    'Uncategorised': Icons.help_outline_rounded,
-  };
-
-  static const Map<String, Color> _categoryColors = {
-    'Food': Color(0xFFFF6B45),
-    'Groceries': Color(0xFF00B894),
-    'Transport': Color(0xFF0984E3),
-    'Shopping': Color(0xFF6C5CE7),
-    'EMI': Color(0xFF2D3436),
-    'Subscriptions': Color(0xFF6C3483),
-    'Utilities': Color(0xFFFDCB6E),
-    'Medical': Color(0xFF00B894),
-    'Housing': Color(0xFF74B9FF),
-    'Entertainment': Color(0xFFE17055),
-    'Income': Color(0xFF00B894),
-    'Uncategorised': Color(0xFFAAAAAC),
-  };
 
   @override
   void dispose() {
@@ -193,10 +164,7 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
   }
 
   void _showFilterSheet() {
-    final appState = context.read<AppState>();
-    final categories =
-        appState.allTransactions.map((t) => t.category).toSet().toList()
-          ..sort();
+    final categories = CategoryConstants.primaryCategories;
     final paymentModes = [
       'UPI',
       'Card',
@@ -268,6 +236,9 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
                   runSpacing: 8,
                   children: categories.map((cat) {
                     final isSelected = _selectedCategory == cat;
+                    final catColor = CategoryConstants.getColor(cat);
+                    final catIcon = CategoryConstants.getIcon(cat);
+
                     return GestureDetector(
                       onTap: () {
                         setSheetState(() {
@@ -282,19 +253,30 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppTheme.primary
+                              ? catColor
                               : AppTheme.surfaceVariantLight,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          cat,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: isSelected
-                                ? Colors.white
-                                : AppTheme.textSecondary,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              catIcon,
+                              size: 14,
+                              color: isSelected ? Colors.white : catColor,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              cat,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: isSelected
+                                    ? Colors.white
+                                    : AppTheme.textSecondary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -384,7 +366,7 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
       backgroundColor: Colors.transparent,
       builder: (_) => TransactionDetailSheet(
         transaction: txn,
-        availableCategories: appState.userSettings.trackedCategories,
+        availableCategories: CategoryConstants.allCategoriesWithUncategorised,
         onCategoryChanged: (cat, sub) async {
           await appState.updateTransactionCategory(txn.id, cat, sub);
         },
@@ -590,6 +572,23 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
                       ),
                       const SizedBox(width: 6),
                       _buildCustomDateChip(),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Category Quick Filter Pills Row
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildCategoryFilterChip(null, 'All Categories'),
+                      ...CategoryConstants.primaryCategories.map(
+                        (cat) => Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: _buildCategoryFilterChip(cat, cat),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -815,9 +814,45 @@ class _FullHistoryScreenState extends State<FullHistoryScreen> {
     );
   }
 
+  Widget _buildCategoryFilterChip(String? category, String label) {
+    final isSelected = _selectedCategory == category;
+    final catColor = category != null ? CategoryConstants.getColor(category) : AppTheme.primary;
+    final catIcon = category != null ? CategoryConstants.getIcon(category) : Icons.category_outlined;
+
+    return GestureDetector(
+      onTap: () => setState(() => _selectedCategory = isSelected ? null : category),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? catColor : AppTheme.surfaceVariantLight,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              catIcon,
+              size: 13,
+              color: isSelected ? Colors.white : catColor,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected ? Colors.white : AppTheme.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildRow(Transaction t, bool isLast, AppState appState) {
-    final icon = _categoryIcons[t.category] ?? Icons.help_outline_rounded;
-    final color = _categoryColors[t.category] ?? AppTheme.textMuted;
+    final icon = CategoryConstants.getIcon(t.category);
+    final color = CategoryConstants.getColor(t.category);
     final timeStr = DateFormat('hh:mm a').format(t.date);
 
     final subInfo = [

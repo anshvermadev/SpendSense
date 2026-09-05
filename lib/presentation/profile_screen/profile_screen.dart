@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/category_constants.dart';
 import '../../services/app_state.dart';
 import '../../services/database_service.dart';
 import '../../theme/app_theme.dart';
@@ -800,18 +801,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showCategoryManager(AppState appState, UserSettings settings) {
-    final allCategories = [
-      'Food',
-      'Groceries',
-      'Transport',
-      'Shopping',
-      'EMI',
-      'Subscriptions',
-      'Utilities',
-      'Medical',
-      'Housing',
-      'Entertainment',
-    ];
+    final allCategories = CategoryConstants.primaryCategories;
     final selected = Set<String>.from(settings.trackedCategories);
 
     showModalBottomSheet(
