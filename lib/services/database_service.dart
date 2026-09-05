@@ -14,6 +14,7 @@ class Transaction {
   final String rawText;
   final String accountNo;
   final String bankRefNo;
+  final String status; // 'success', 'failed', 'pending'
   bool isSubscription;
 
   Transaction({
@@ -29,6 +30,7 @@ class Transaction {
     required this.rawText,
     this.accountNo = '',
     this.bankRefNo = '',
+    this.status = 'success',
     this.isSubscription = false,
   });
 
@@ -47,6 +49,7 @@ class Transaction {
     'rawText': rawText,
     'accountNo': accountNo,
     'bankRefNo': bankRefNo,
+    'status': status,
     'isSubscription': isSubscription,
   };
 
@@ -63,8 +66,31 @@ class Transaction {
     rawText: json['rawText'] as String? ?? '',
     accountNo: json['accountNo'] as String? ?? '',
     bankRefNo: json['bankRefNo'] as String? ?? '',
+    status: _parseStatus(json['status'] as String?, json['rawText'] as String?),
     isSubscription: json['isSubscription'] as bool? ?? false,
   );
+
+  static String _parseStatus(String? status, String? rawText) {
+    if (status != null && status.isNotEmpty) {
+      final s = status.toLowerCase().trim();
+      if (s == 'fail' || s == 'failed' || s == 'failure') return 'failed';
+      if (s == 'pending' || s == 'process' || s == 'processing') return 'pending';
+      return 'success';
+    }
+    final raw = (rawText ?? '').toLowerCase();
+    if (raw.contains('fail') ||
+        raw.contains('declin') ||
+        raw.contains('unsuccessful') ||
+        raw.contains('bounc')) {
+      return 'failed';
+    }
+    if (raw.contains('pending') ||
+        raw.contains('processing') ||
+        raw.contains('in progress')) {
+      return 'pending';
+    }
+    return 'success';
+  }
 }
 
 class Budget {
@@ -360,6 +386,7 @@ class DatabaseService {
       rawText: old.rawText,
       accountNo: old.accountNo,
       bankRefNo: old.bankRefNo,
+      status: old.status,
       isSubscription: old.isSubscription,
     );
     // Save merchant override

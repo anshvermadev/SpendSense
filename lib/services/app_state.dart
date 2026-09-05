@@ -65,6 +65,7 @@ class AppState extends ChangeNotifier {
     required DateTime date,
     String? category,
     String? subcategory,
+    String status = 'success',
   }) async {
     final cat =
         category ??
@@ -85,6 +86,7 @@ class AppState extends ChangeNotifier {
       rawText: '',
       accountNo: '',
       bankRefNo: '',
+      status: status,
     );
     await _db.addTransaction(txn);
     notifyListeners();
@@ -137,6 +139,7 @@ class AppState extends ChangeNotifier {
               rawText: old.rawText,
               accountNo: newAcct.isNotEmpty ? newAcct : old.accountNo,
               bankRefNo: newRef.isNotEmpty ? newRef : old.bankRefNo,
+              status: old.status,
               isSubscription: old.isSubscription,
             );
           }

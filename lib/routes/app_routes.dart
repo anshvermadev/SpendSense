@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../presentation/dashboard_screen/dashboard_screen.dart';
+import '../presentation/history_screen/full_history_screen.dart';
 import '../presentation/history_screen/history_screen.dart';
 import '../presentation/home_screen/home_screen.dart';
 import '../presentation/onboarding_screen/onboarding_screen.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String onboardingScreen = '/onboarding-screen';
   static const String homeScreen = '/home-screen';
   static const String historyScreen = '/history-screen';
+  static const String fullHistoryScreen = '/full-history-screen';
   static const String dashboardScreen = '/dashboard-screen';
   static const String profileScreen = '/profile-screen';
 }
@@ -48,6 +50,28 @@ final GoRouter appRouter = GoRouter(
             opacity: CurvedAnimation(
               parent: animation,
               curve: Curves.easeOutCubic,
+            ),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.fullHistoryScreen,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FullHistoryScreen(),
+        transitionDuration: const Duration(milliseconds: 280),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              ),
             ),
             child: child,
           );

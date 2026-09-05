@@ -9,6 +9,7 @@ class AddTransactionSheet extends StatefulWidget {
     String merchant,
     String paymentMode,
     DateTime date,
+    String status,
   )
   onAdd;
 
@@ -24,6 +25,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
   final _merchantController = TextEditingController();
   String _type = 'debit';
   String _paymentMode = 'UPI';
+  String _status = 'success';
   DateTime _date = DateTime.now();
   bool _isLoading = false;
 
@@ -52,6 +54,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
       _merchantController.text.trim(),
       _paymentMode,
       _date,
+      _status,
     );
     if (mounted) Navigator.pop(context);
   }
@@ -230,6 +233,25 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              const Text(
+                'Status',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _buildStatusChip('success', 'Success', Icons.check_circle_rounded, const Color(0xFF00B894)),
+                  const SizedBox(width: 8),
+                  _buildStatusChip('pending', 'Pending', Icons.access_time_filled_rounded, const Color(0xFFE67E22)),
+                  const SizedBox(width: 8),
+                  _buildStatusChip('failed', 'Failed', Icons.cancel_rounded, const Color(0xFFD63031)),
+                ],
+              ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -256,6 +278,41 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                           'Add Transaction',
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String val, String label, IconData icon, Color color) {
+    final isSelected = _status == val;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _status = val),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? color.withAlpha(25) : AppTheme.surfaceVariantLight,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? color : const Color(0xFFE0E0E8),
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: isSelected ? color : AppTheme.textSecondary),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected ? color : AppTheme.textPrimary,
                 ),
               ),
             ],
