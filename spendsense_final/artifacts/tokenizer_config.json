@@ -1,0 +1,11 @@
+{
+    "type": "character_level",
+    "normalization": "lowercase_strip_normalize_spaces",
+    "max_sequence_length": 128,
+    "padding": "post",
+    "truncation": "post",
+    "pad_token": "<PAD>",
+    "pad_token_id": 0,
+    "unknown_token": "<UNK>",
+    "unknown_token_id": 1
+}

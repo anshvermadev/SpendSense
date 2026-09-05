@@ -1,0 +1,361 @@
+transaction_text,merchant,category,true_merchant,predicted_merchant,merchant_confidence,merchant_correct,true_category,predicted_category,category_confidence,category_correct
+wynk @axl,Wynk,Entertainment,Wynk,Wynk,0.99999833,True,Entertainment,Subscription,0.62157923,False
+cult fit_90436,Cult Fit,Subscription,Cult Fit,Cult Fit,0.999995,True,Subscription,Medical,0.5072746,False
+clarks @jupiter,Clarks,Shopping,Clarks,Clarks,0.9999924,True,Shopping,Travel,0.7800078,False
+jiosaavn seepz @indus,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99986005,True,Subscription,Entertainment,0.51198,False
+cult fit_koramangala,Cult Fit,Medical,Cult Fit,Cult Fit,0.99994946,True,Medical,Subscription,0.58424735,False
+torrent gasmart,Torrent Gas,Utilities,Torrent Gas,Torrent Gas,0.99966073,True,Utilities,Fuel,0.89368796,False
+wynk @idbi,Wynk,Entertainment,Wynk,Wynk,0.9999974,True,Entertainment,Subscription,0.61223805,False
+netflix_cbe,Netflix,Entertainment,Netflix,Netflix,1.0,True,Entertainment,Subscription,0.53027976,False
+zee569978,ZEE5,Entertainment,ZEE5,ZEE5,0.999992,True,Entertainment,Subscription,0.57467186,False
+hp gas_juhu_maharashtra,HP Gas,Utilities,HP Gas,HP Gas,0.9998946,True,Utilities,Fuel,0.5079963,False
+ira share_vns,Ira,Personal,Ira,Mira,0.64081705,False,Personal,Personal,1.0,True
+gujarat gas_shimla,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.99997914,True,Utilities,Fuel,0.61781627,False
+apple music_43322,Apple Music,Entertainment,Apple Music,Apple Music,0.99999404,True,Entertainment,Subscription,0.70384175,False
+goibibo_28521,Goibibo,Travel,Goibibo,Goibibo,0.99998796,True,Travel,Transport,0.6607921,False
+hungama71131,Hungama,Entertainment,Hungama,Hungama,0.9999883,True,Entertainment,Subscription,0.52766263,False
+wynk agr @unionbank,Wynk,Entertainment,Wynk,Wynk,0.9999993,True,Entertainment,Subscription,0.68174535,False
+gaana-89886,Gaana,Subscription,Gaana,Gaana,0.9999995,True,Subscription,Entertainment,0.50975657,False
+adani gas84215,Adani Gas,Fuel,Adani Gas,Adani Gas,0.99999464,True,Fuel,Utilities,0.5181352,False
+indanecenter,Indane,Utilities,Indane,Indane,0.9999894,True,Utilities,Fuel,0.6670788,False
+hungama@yesbank,Hungama,Entertainment,Hungama,Hungama,0.99999356,True,Entertainment,Subscription,0.56620336,False
+bharat gas@okhdfcbank,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99997735,True,Fuel,Utilities,0.6377183,False
+bharat gas_76528,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.9999962,True,Fuel,Utilities,0.63954407,False
+apple music@okaxis,Apple Music,Entertainment,Apple Music,Apple Music,0.9999908,True,Entertainment,Subscription,0.6979781,False
+for sneha@uco,Sneha,Personal,Sneha,Isha,0.27030668,False,Personal,Personal,1.0,True
+goibibo,Goibibo,Travel,Goibibo,Goibibo,0.9999325,True,Travel,Transport,0.6530654,False
+gaana-84567,Gaana,Subscription,Gaana,Gaana,0.9999995,True,Subscription,Entertainment,0.50857306,False
+netflix-82576,Netflix,Subscription,Netflix,Netflix,0.9999999,True,Subscription,Entertainment,0.53496265,False
+indraprastha gas_upi,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999994,True,Utilities,Fuel,0.6612688,False
+disney hotstar22137,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.999995,True,Entertainment,Subscription,0.68760604,False
+apple music_okaxis,Apple Music,Entertainment,Apple Music,Apple Music,0.99999213,True,Entertainment,Subscription,0.7005428,False
+torrent gas seepz,Torrent Gas,Fuel,Torrent Gas,Torrent Gas,0.999969,True,Fuel,Utilities,0.710119,False
+spotify31692,Spotify,Entertainment,Spotify,Spotify,0.9999634,True,Entertainment,Subscription,0.60200197,False
+gujarat gas5947,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.99999404,True,Utilities,Fuel,0.6408497,False
+fortune_jai,Fortune,Travel,Fortune,Fortune,0.99994636,True,Travel,Groceries,0.5063929,False
+makemytrip-80332,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999962,True,Travel,Transport,0.6868259,False
+netflix,Netflix,Subscription,Netflix,Netflix,0.99999976,True,Subscription,Entertainment,0.6381675,False
+hungama @centralbank,Hungama,Subscription,Hungama,Hungama,0.9999939,True,Subscription,Entertainment,0.584783,False
+jiosaavn_axisbank,JioSaavn,Entertainment,JioSaavn,JioSaavn,0.99994695,True,Entertainment,Subscription,0.5413113,False
+hungama rpr @sbi,Hungama,Subscription,Hungama,Hungama,0.99998903,True,Subscription,Entertainment,0.6306701,False
+khanacademy,Khan Academy,Education,Khan Academy,Unacademy,0.9898977,False,Education,Education,1.0,True
+mobikwik netflix ccu,Netflix,Entertainment,Netflix,Netflix,0.9999994,True,Entertainment,Subscription,0.57335126,False
+mahanagar gas_boi,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.9999993,True,Utilities,Fuel,0.60840297,False
+gaana_upi,Gaana,Subscription,Gaana,Gaana,0.9999974,True,Subscription,Entertainment,0.54145277,False
+goibibo38924,Goibibo,Travel,Goibibo,Goibibo,0.99996674,True,Travel,Transport,0.6729125,False
+gaana-89711,Gaana,Subscription,Gaana,Gaana,0.99999964,True,Subscription,Entertainment,0.5080081,False
+mahanagar gas delhi,Mahanagar Gas,Fuel,Mahanagar Gas,Mahanagar Gas,0.9999882,True,Fuel,Utilities,0.62769175,False
+adani gas_blr,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999702,True,Fuel,Utilities,0.5441668,False
+cult fit_boi,Cult Fit,Subscription,Cult Fit,Cult Fit,0.99999535,True,Subscription,Medical,0.50220734,False
+cult fit_maharashtra,Cult Fit,Medical,Cult Fit,Cult Fit,0.9999739,True,Medical,Subscription,0.529555,False
+payzapp gaana tiruchirappalli,Gaana,Entertainment,Gaana,Gaana,0.99306726,True,Entertainment,Personal,0.64639777,False
+mahanagar gas_bangalore_kotak,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999213,True,Utilities,Fuel,0.6076242,False
+indraprastha gas-56082,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999989,True,Utilities,Fuel,0.6625646,False
+spotify@niyo,Spotify,Entertainment,Spotify,Spotify,0.9999788,True,Entertainment,Subscription,0.61283636,False
+hp gas-06791,HP Gas,Utilities,HP Gas,HP Gas,0.9999862,True,Utilities,Fuel,0.50698614,False
+bharat gas_gau,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.9999883,True,Fuel,Utilities,0.5294256,False
+spotify00925,Spotify,Entertainment,Spotify,Spotify,0.9999666,True,Entertainment,Subscription,0.58753955,False
+indraprastha gas_17201,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999994,True,Utilities,Fuel,0.69062203,False
+gpay hp gas vga,HP Gas,Utilities,HP Gas,HP Gas,0.99967784,True,Utilities,Fuel,0.824751,False
+indraprastha gas56082,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999917,True,Utilities,Fuel,0.68242925,False
+jiosaavn_seepz_indus,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99994385,True,Subscription,Entertainment,0.562789,False
+apple music-order,Apple Music,Entertainment,Apple Music,Apple Music,0.9999871,True,Entertainment,Subscription,0.8455156,False
+hungama_94057,Hungama,Entertainment,Hungama,Hungama,0.9999937,True,Entertainment,Subscription,0.59160286,False
+jiocinema_vadodara,JioCinema,Entertainment,JioCinema,JioCinema,0.99987686,True,Entertainment,Subscription,0.53797656,False
+gaana82291,Gaana,Entertainment,Gaana,Gaana,0.99999654,True,Entertainment,Subscription,0.5027048,False
+makemytrip98786,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.99999416,True,Travel,Transport,0.6912035,False
+jiosaavn_07957,JioSaavn,Entertainment,JioSaavn,JioSaavn,0.99988234,True,Entertainment,Subscription,0.50065565,False
+pay_clarks,Clarks,Shopping,Clarks,Clarks,0.99893755,True,Shopping,Travel,0.8328842,False
+gujarat gas mysuru @indianbank,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.999634,True,Utilities,Fuel,0.51468825,False
+jiosaavn @ybl,JioSaavn,Subscription,JioSaavn,JioSaavn,0.9999416,True,Subscription,Entertainment,0.5148896,False
+apple music_tir,Apple Music,Entertainment,Apple Music,Apple Music,0.9999926,True,Entertainment,Subscription,0.6995936,False
+payzapp_central,Central,Shopping,Central,Central,0.7596452,True,Shopping,Fuel,0.3906253,False
+gaana_icici,Gaana,Subscription,Gaana,Gaana,0.99999726,True,Subscription,Entertainment,0.5161095,False
+zee5 delivery 95787,ZEE5,Entertainment,ZEE5,ZEE5,0.9998393,True,Entertainment,Subscription,0.62018013,False
+clarks28698,Clarks,Shopping,Clarks,Clarks,0.99999666,True,Shopping,Travel,0.648103,False
+indane@citi,Indane,Fuel,Indane,Indane,0.9999964,True,Fuel,Utilities,0.5447798,False
+payzapp_hp gas,HP Gas,Utilities,HP Gas,HP Gas,0.99993,True,Utilities,Fuel,0.6261036,False
+paytmnetflix,Netflix,Subscription,Netflix,Netflix,0.9999751,True,Subscription,Entertainment,0.6181957,False
+jiosaavn_pos_61531,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99995816,True,Subscription,Entertainment,0.5594974,False
+adani gas@okaxis,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999963,True,Fuel,Utilities,0.5136241,False
+goibibo10282,Goibibo,Travel,Goibibo,Goibibo,0.9999596,True,Travel,Transport,0.75474715,False
+cult fit16010,Cult Fit,Subscription,Cult Fit,Cult Fit,0.9999956,True,Subscription,Medical,0.5647389,False
+adani gas_02701,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999937,True,Fuel,Utilities,0.54015356,False
+zee5-94101,ZEE5,Entertainment,ZEE5,ZEE5,0.99999595,True,Entertainment,Subscription,0.5675529,False
+adani gas@ybl,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999862,True,Fuel,Utilities,0.52737826,False
+bharat gas@sc,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99999535,True,Fuel,Utilities,0.6702358,False
+jiocinema@vijaya,JioCinema,Entertainment,JioCinema,JioCinema,0.999815,True,Entertainment,Subscription,0.52035356,False
+clarks32229,Clarks,Shopping,Clarks,Clarks,0.99999595,True,Shopping,Travel,0.5521074,False
+sbiemi,SBI EMI,EMI,SBI EMI,IIM,0.71726745,False,EMI,Education,0.87601835,False
+indraprastha gas trv,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999976,True,Utilities,Fuel,0.8403617,False
+adani gas@syndicate,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999882,True,Fuel,Utilities,0.5507225,False
+jiosaavn_pnb,JioSaavn,Entertainment,JioSaavn,JioSaavn,0.9999161,True,Entertainment,Subscription,0.50254005,False
+gujarat gas_order,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9999819,True,Utilities,Fuel,0.5708165,False
+zee5_04847,ZEE5,Entertainment,ZEE5,ZEE5,0.9999962,True,Entertainment,Subscription,0.58467853,False
+gaana47545,Gaana,Entertainment,Gaana,Gaana,0.9999968,True,Entertainment,Subscription,0.50108397,False
+gujarat gas_idr,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9999875,True,Utilities,Fuel,0.66437465,False
+torrent gas_idbi,Torrent Gas,Fuel,Torrent Gas,Torrent Gas,0.9999938,True,Fuel,Utilities,0.5754046,False
+makemytrip_22184,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.99999547,True,Travel,Transport,0.6976871,False
+bharat gas64001,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.9999887,True,Fuel,Utilities,0.6288807,False
+mahanagar gas65078,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999964,True,Utilities,Fuel,0.685517,False
+goibibo_centralbank,Goibibo,Travel,Goibibo,Goibibo,0.9998747,True,Travel,Transport,0.55982155,False
+spotify-coimbatore,Spotify,Entertainment,Spotify,Spotify,0.99790525,True,Entertainment,Subscription,0.63331765,False
+indraprastha gas_citi,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999976,True,Utilities,Fuel,0.7545645,False
+spotify ind,Spotify,Entertainment,Spotify,Spotify,0.9999404,True,Entertainment,Subscription,0.66903496,False
+wynk76095,Wynk,Entertainment,Wynk,Wynk,0.99999917,True,Entertainment,Subscription,0.6915205,False
+makemytrip @jupiter,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.999992,True,Travel,Transport,0.6760277,False
+cult fit idr @hsbc,Cult Fit,Subscription,Cult Fit,Cult Fit,0.9999932,True,Subscription,Medical,0.5656243,False
+adani gas-80540,Adani Gas,Fuel,Adani Gas,Adani Gas,0.99999475,True,Fuel,Utilities,0.54236096,False
+indane dlf @sc,Indane,Utilities,Indane,Indane,0.99998415,True,Utilities,Fuel,0.86412746,False
+goibibo_66031,Goibibo,Travel,Goibibo,Goibibo,0.99998355,True,Travel,Transport,0.62707245,False
+icici pay spotify hubballi,Spotify,Subscription,Spotify,Spotify,0.9999759,True,Subscription,Entertainment,0.6686377,False
+indraprastha gas30482,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999989,True,Utilities,Fuel,0.6744713,False
+jiocinema @obc,JioCinema,Entertainment,JioCinema,JioCinema,0.9999697,True,Entertainment,Subscription,0.5638404,False
+netflix@okhdfcbank,Netflix,Entertainment,Netflix,Netflix,1.0,True,Entertainment,Subscription,0.5542568,False
+wynk@andhra,Wynk,Entertainment,Wynk,Wynk,0.9999981,True,Entertainment,Subscription,0.56289226,False
+cult fit_35179,Cult Fit,Subscription,Cult Fit,Cult Fit,0.99999595,True,Subscription,Medical,0.5404206,False
+fortune @okaxis,Fortune,Groceries,Fortune,Fortune,0.99984825,True,Groceries,Travel,0.6759782,False
+sonyliv@okaxis,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999995,True,Entertainment,Subscription,0.722561,False
+indraprastha gas@icici,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999976,True,Utilities,Fuel,0.70934737,False
+sonyliv kandivali @okhdfcbank,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999969,True,Entertainment,Subscription,0.5760839,False
+apple music hubballi @syndicate,Apple Music,Entertainment,Apple Music,Apple Music,0.9998734,True,Entertainment,Subscription,0.7020769,False
+goibibo24472,Goibibo,Travel,Goibibo,Goibibo,0.99996793,True,Travel,Transport,0.7276731,False
+goibibo @karnataka,Goibibo,Travel,Goibibo,Goibibo,0.99997795,True,Travel,Transport,0.5154922,False
+sonyliv@vijaya,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.99999964,True,Entertainment,Subscription,0.7745505,False
+makemytrip-99915,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.999997,True,Travel,Transport,0.6699641,False
+zee5-57080,ZEE5,Entertainment,ZEE5,ZEE5,0.99999523,True,Entertainment,Subscription,0.5791892,False
+makemytrip_patna,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.999987,True,Travel,Transport,0.69892913,False
+disney hotstar_uboi,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999968,True,Entertainment,Subscription,0.64120215,False
+torrent gas @ibl,Torrent Gas,Utilities,Torrent Gas,Torrent Gas,0.99999845,True,Utilities,Fuel,0.517621,False
+hp gas84791,HP Gas,Utilities,HP Gas,HP Gas,0.9999666,True,Utilities,Fuel,0.5186409,False
+hp gas_patna_ybl,HP Gas,Fuel,HP Gas,HP Gas,0.999987,True,Fuel,Utilities,0.60491914,False
+wynk india 17754,Wynk,Subscription,Wynk,Wynk,0.99999964,True,Subscription,Entertainment,0.788524,False
+hungama @hsbc,Hungama,Entertainment,Hungama,Hungama,0.9999857,True,Entertainment,Subscription,0.5657413,False
+jiocinema_axisbank,JioCinema,Subscription,JioCinema,JioCinema,0.9999027,True,Subscription,Entertainment,0.5301641,False
+gaana_raipur,Gaana,Subscription,Gaana,Gaana,0.9999732,True,Subscription,Entertainment,0.63595307,False
+gaana51061,Gaana,Entertainment,Gaana,Gaana,0.9999964,True,Entertainment,Subscription,0.50911444,False
+netflix_goi_corporation,Netflix,Subscription,Netflix,Netflix,0.99999654,True,Subscription,Entertainment,0.6058958,False
+indraprastha gas-13455,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999905,True,Utilities,Fuel,0.6558525,False
+gujarat gas@okhdfcbank,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9999417,True,Utilities,Fuel,0.6806024,False
+fortune,Fortune,Travel,Fortune,Fortune,0.9999635,True,Travel,Groceries,0.5721202,False
+hp gas_47239,HP Gas,Utilities,HP Gas,HP Gas,0.99997747,True,Utilities,Fuel,0.51272357,False
+pal@indus,Pal,Personal,Pal,Personal,0.74560994,False,Personal,Personal,0.75799817,True
+bhim disney hotstar juhu,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.99997246,True,Entertainment,Subscription,0.5765714,False
+fortune @unionbank,Fortune,Travel,Fortune,Fortune,0.9999418,True,Travel,Groceries,0.54590696,False
+makemytrip indiranagar @hdfcbank,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999777,True,Travel,Transport,0.8035449,False
+amazonpay w guwahati,W,Shopping,W,Puma,0.7488455,False,Shopping,Shopping,0.8578419,True
+zee5-70097,ZEE5,Entertainment,ZEE5,ZEE5,0.9999957,True,Entertainment,Subscription,0.59741044,False
+jiosaavn lucknow,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99838805,True,Subscription,Entertainment,0.6564688,False
+goibibo_11775,Goibibo,Travel,Goibibo,Goibibo,0.9999862,True,Travel,Transport,0.6455499,False
+sbi pay clarks,Clarks,Shopping,Clarks,Clarks,0.99948883,True,Shopping,Travel,0.61957467,False
+wynk@onecard,Wynk,Entertainment,Wynk,Wynk,0.999974,True,Entertainment,Subscription,0.58517843,False
+mahanagar gas73868,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999964,True,Utilities,Fuel,0.6752655,False
+adani gas kuu,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999943,True,Fuel,Utilities,0.58423316,False
+disney hotstar_sc,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999974,True,Entertainment,Subscription,0.64751595,False
+adani gas60698,Adani Gas,Fuel,Adani Gas,Adani Gas,0.99999046,True,Fuel,Utilities,0.5267217,False
+hungama rpr @indus,Hungama,Subscription,Hungama,Hungama,0.999985,True,Subscription,Entertainment,0.75271994,False
+paytm jiocinema,JioCinema,Subscription,JioCinema,JioCinema,0.9992717,True,Subscription,Entertainment,0.642775,False
+wynk_53290,Wynk,Entertainment,Wynk,Wynk,0.999998,True,Entertainment,Subscription,0.63934755,False
+apple music tir @hsbc,Apple Music,Entertainment,Apple Music,Apple Music,0.99997663,True,Entertainment,Subscription,0.60806686,False
+fortune_jupiter,Fortune,Travel,Fortune,Fortune,0.99989843,True,Travel,Groceries,0.8035037,False
+adani gas53262,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999925,True,Fuel,Utilities,0.5104345,False
+netflix73294,Netflix,Subscription,Netflix,Netflix,0.9999999,True,Subscription,Entertainment,0.5248576,False
+mahanagar gas madurai,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999154,True,Utilities,Fuel,0.64476275,False
+wynk_kochi,Wynk,Entertainment,Wynk,Wynk,0.99999976,True,Entertainment,Subscription,0.59132516,False
+bharat gas_64001,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99999654,True,Fuel,Utilities,0.63970894,False
+mobikwik indane cbe,Indane,Fuel,Indane,Indane,0.99978316,True,Fuel,Utilities,0.94810164,False
+gujarat gas_88394,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9999933,True,Utilities,Fuel,0.7050578,False
+mahanagar gas@maharashtra,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999917,True,Utilities,Fuel,0.71096766,False
+jiocinema@axl,JioCinema,Subscription,JioCinema,JioCinema,0.9999571,True,Subscription,Entertainment,0.5112919,False
+goibibo_karnataka,Goibibo,Travel,Goibibo,Goibibo,0.9999529,True,Travel,Transport,0.5751448,False
+disney hotstar-43316,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999969,True,Entertainment,Subscription,0.6413806,False
+adani gas_meerut,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999552,True,Fuel,Utilities,0.8647011,False
+fortune63853,Fortune,Travel,Fortune,Fortune,0.99996567,True,Travel,Groceries,0.6246217,False
+hungama_upi_5157,Hungama,Entertainment,Hungama,Hungama,0.99998176,True,Entertainment,Subscription,0.5765051,False
+spotify kuu @yesbank,Spotify,Entertainment,Spotify,Spotify,0.99996865,True,Entertainment,Subscription,0.5445505,False
+mahanagar gas_idbi,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.9999995,True,Utilities,Fuel,0.6555437,False
+zee5 @ybl,ZEE5,Entertainment,ZEE5,ZEE5,0.9999968,True,Entertainment,Subscription,0.56752115,False
+jiosaavn_web_71648,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99976796,True,Subscription,Entertainment,0.7554506,False
+gaana_47175,Gaana,Subscription,Gaana,Gaana,0.99999917,True,Subscription,Entertainment,0.50629264,False
+gaana_69937,Gaana,Subscription,Gaana,Gaana,0.99999905,True,Subscription,Entertainment,0.51067317,False
+jiosaavn_manali,JioSaavn,Subscription,JioSaavn,JioSaavn,0.9997116,True,Subscription,Entertainment,0.5811234,False
+cult_fit,Cult Fit,Medical,Cult Fit,Cult Fit,0.99998415,True,Medical,Subscription,0.66999304,False
+hungama_39432,Hungama,Entertainment,Hungama,Hungama,0.9999943,True,Entertainment,Subscription,0.5798618,False
+apple music chembur @kotak,Apple Music,Entertainment,Apple Music,Apple Music,0.9999728,True,Entertainment,Subscription,0.596202,False
+sonyliv-70662,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.99999917,True,Entertainment,Subscription,0.6501428,False
+disney hotstar maa,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999571,True,Entertainment,Subscription,0.71167845,False
+jiocinema_75939,JioCinema,Entertainment,JioCinema,JioCinema,0.99997604,True,Entertainment,Subscription,0.57769567,False
+gujarat gas-05511,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.99999297,True,Utilities,Fuel,0.67287505,False
+sonyliv jdh @indianbank,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999976,True,Entertainment,Subscription,0.63455963,False
+wynk_73191,Wynk,Entertainment,Wynk,Wynk,0.99999666,True,Entertainment,Subscription,0.6082745,False
+indane37284,Indane,Utilities,Indane,Indane,0.99999785,True,Utilities,Fuel,0.57928544,False
+gujarat gas_53932,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9999918,True,Utilities,Fuel,0.70098186,False
+hp gas54039,HP Gas,Utilities,HP Gas,HP Gas,0.99996996,True,Utilities,Fuel,0.5269785,False
+gaana_94348,Gaana,Subscription,Gaana,Gaana,0.99999905,True,Subscription,Entertainment,0.51461643,False
+sonyliv @syndicate,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999993,True,Entertainment,Subscription,0.613994,False
+pay gujarat gas trz,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9975713,True,Utilities,Fuel,0.55384177,False
+hungama @okhdfcbank,Hungama,Entertainment,Hungama,Hungama,0.9999455,True,Entertainment,Subscription,0.5178359,False
+apple music @bob,Apple Music,Entertainment,Apple Music,Apple Music,0.9999945,True,Entertainment,Subscription,0.65617645,False
+zee5 @hdfcbank,ZEE5,Subscription,ZEE5,ZEE5,0.99999523,True,Subscription,Entertainment,0.5236766,False
+torrent gas_pnq,Torrent Gas,Fuel,Torrent Gas,Torrent Gas,0.9999951,True,Fuel,Utilities,0.51672065,False
+goibibo28521,Goibibo,Travel,Goibibo,Goibibo,0.9999578,True,Travel,Transport,0.733912,False
+zomatopro,Zomato Pro,Subscription,Zomato Pro,Zomato,0.95473653,False,Subscription,Food,0.9968316,False
+cult fit @karnataka,Cult Fit,Medical,Cult Fit,Cult Fit,0.99999213,True,Medical,Subscription,0.538116,False
+netflix sector @uni,Netflix,Entertainment,Netflix,Netflix,0.9999993,True,Entertainment,Subscription,0.9455041,False
+gaana44893,Gaana,Entertainment,Gaana,Gaana,0.9999958,True,Entertainment,Subscription,0.53557545,False
+hmretail,HM,Shopping,HM,HM,0.6325413,True,Shopping,Groceries,0.7583959,False
+clarks @sc,Clarks,Shopping,Clarks,Clarks,0.9999949,True,Shopping,Travel,0.90098685,False
+goibibo_axl,Goibibo,Travel,Goibibo,Goibibo,0.99998045,True,Travel,Transport,0.7091973,False
+zee5-68197,ZEE5,Entertainment,ZEE5,ZEE5,0.9999945,True,Entertainment,Subscription,0.5903496,False
+torrent gas34532,Torrent Gas,Utilities,Torrent Gas,Torrent Gas,0.99999654,True,Utilities,Fuel,0.54263383,False
+sonyliv_ccj,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999995,True,Entertainment,Subscription,0.67651594,False
+disney hotstar13048,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.99999416,True,Entertainment,Subscription,0.6716252,False
+makemytrip_vtz_okhdfcbank,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999938,True,Travel,Transport,0.8429735,False
+icici pay_jiocinema,JioCinema,Entertainment,JioCinema,JioCinema,0.99968964,True,Entertainment,Subscription,0.51521295,False
+netflix_food_28098,Netflix,Subscription,Netflix,Netflix,1.0,True,Subscription,Entertainment,0.68283206,False
+gujarat gas_80184,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.99999213,True,Utilities,Fuel,0.71098983,False
+indraprastha gas_banjara hills,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999995,True,Utilities,Fuel,0.7039504,False
+gaana@apl,Gaana,Subscription,Gaana,Gaana,0.9999908,True,Subscription,Entertainment,0.5349411,False
+jiobp,Jio BP,Fuel,Jio BP,Jio,0.9986247,False,Fuel,Utilities,0.9055089,False
+bharat gas89697,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99998665,True,Fuel,Utilities,0.6289932,False
+clarks dehradun,Clarks,Shopping,Clarks,Clarks,0.9999994,True,Shopping,Travel,0.8069893,False
+disney hotstar @fi,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999956,True,Entertainment,Subscription,0.6330381,False
+own_axisbank_1558,Own,Personal,Own,Self,0.99562985,False,Personal,Personal,0.9999906,True
+netflix@syndicate,Netflix,Subscription,Netflix,Netflix,0.99999964,True,Subscription,Entertainment,0.5583787,False
+jio_bp,Jio BP,Fuel,Jio BP,Jio BP,0.6246873,True,Fuel,Utilities,0.6343336,False
+clarks_jupiter,Clarks,Shopping,Clarks,Clarks,0.9999782,True,Shopping,Travel,0.7992423,False
+cult fit@karnataka,Cult Fit,Medical,Cult Fit,Cult Fit,0.99999034,True,Medical,Subscription,0.70603776,False
+jiocinema_okaxis,JioCinema,Entertainment,JioCinema,JioCinema,0.9999428,True,Entertainment,Subscription,0.5060279,False
+pay_torrent gas,Torrent Gas,Fuel,Torrent Gas,Torrent Gas,0.99999356,True,Fuel,Utilities,0.5681749,False
+makemytrip20241,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999943,True,Travel,Transport,0.68964803,False
+hungama37936,Hungama,Entertainment,Hungama,Hungama,0.9999888,True,Entertainment,Subscription,0.5220045,False
+sonyliv kandivali @onecard,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999963,True,Entertainment,Subscription,0.5579964,False
+netflix46401,Netflix,Subscription,Netflix,Netflix,0.9999999,True,Subscription,Entertainment,0.51783144,False
+wynk@bob,Wynk,Entertainment,Wynk,Wynk,0.99999905,True,Entertainment,Subscription,0.6595908,False
+sis@oksbi,Sis,Personal,Sis,Personal,0.4953558,False,Personal,Personal,0.99141663,True
+cult fit_online_68490,Cult Fit,Medical,Cult Fit,Cult Fit,0.99999464,True,Medical,Subscription,0.5874357,False
+jiosaavn haridwar,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99985576,True,Subscription,Entertainment,0.6025486,False
+torrent-gas,Torrent Gas,Fuel,Torrent Gas,Torrent Gas,0.9999958,True,Fuel,Utilities,0.5870734,False
+disney hotstar_federal,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999962,True,Entertainment,Subscription,0.5737422,False
+indraprastha gas ccj,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999976,True,Utilities,Fuel,0.73111045,False
+cult fit_24238,Cult Fit,Subscription,Cult Fit,Cult Fit,0.9999956,True,Subscription,Medical,0.5307173,False
+freecharge guru,Guru,Income,Guru,Dabur,0.30385238,False,Income,Groceries,0.83675534,False
+hp gas idr @citi,HP Gas,Fuel,HP Gas,HP Gas,0.9999509,True,Fuel,Utilities,0.6929249,False
+jiosaavn @unionbank,JioSaavn,Entertainment,JioSaavn,JioSaavn,0.99975365,True,Entertainment,Subscription,0.51149356,False
+jiosaavn @okaxis,JioSaavn,Subscription,JioSaavn,JioSaavn,0.9998579,True,Subscription,Entertainment,0.5499333,False
+makemytrip @indianbank,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999932,True,Travel,Transport,0.7089131,False
+goibibo-38689,Goibibo,Travel,Goibibo,Goibibo,0.9999926,True,Travel,Transport,0.6391719,False
+wynk_india_97458,Wynk,Entertainment,Wynk,Wynk,0.9999995,True,Entertainment,Subscription,0.5254186,False
+disney hotstar-jai,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999951,True,Entertainment,Subscription,0.65737545,False
+hungama worli,Hungama,Entertainment,Hungama,Hungama,0.9999498,True,Entertainment,Subscription,0.53055954,False
+adani gas @ybl,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999958,True,Fuel,Utilities,0.51425827,False
+indane @jupiter,Indane,Utilities,Indane,Indane,0.99999547,True,Utilities,Fuel,0.5084714,False
+mahanagar gas_bangalore_axisbank,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.9999745,True,Utilities,Fuel,0.6058711,False
+netflix@boi,Netflix,Subscription,Netflix,Netflix,0.9999999,True,Subscription,Entertainment,0.52908397,False
+indane91898,Indane,Utilities,Indane,Indane,0.9999969,True,Utilities,Fuel,0.61674505,False
+jiosaavn38046,JioSaavn,Subscription,JioSaavn,JioSaavn,0.9998249,True,Subscription,Entertainment,0.51552796,False
+zee5_69978,ZEE5,Entertainment,ZEE5,ZEE5,0.999997,True,Entertainment,Subscription,0.5795499,False
+hungama@uboi,Hungama,Entertainment,Hungama,Hungama,0.99998736,True,Entertainment,Subscription,0.5795782,False
+adani gas26753,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999926,True,Fuel,Utilities,0.5230239,False
+gpay jiocinema hubballi,JioCinema,Subscription,JioCinema,JioCinema,0.9996234,True,Subscription,Entertainment,0.6549858,False
+sonyliv @hsbc,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999994,True,Entertainment,Subscription,0.6724649,False
+myself@uboi,Myself,Personal,Myself,Self,0.59416443,False,Personal,Personal,0.99999964,True
+torrent gas@ibl,Torrent Gas,Utilities,Torrent Gas,Torrent Gas,0.9999944,True,Utilities,Fuel,0.5431072,False
+apple music_63571,Apple Music,Entertainment,Apple Music,Apple Music,0.9999945,True,Entertainment,Subscription,0.70647764,False
+adani gas @slice,Adani Gas,Fuel,Adani Gas,Adani Gas,0.99999166,True,Fuel,Utilities,0.5221788,False
+hungama_haridwar,Hungama,Subscription,Hungama,Hungama,0.99999654,True,Subscription,Entertainment,0.86508137,False
+goibibo @hsbc,Goibibo,Travel,Goibibo,Goibibo,0.9999962,True,Travel,Transport,0.5381826,False
+spotify_27775,Spotify,Entertainment,Spotify,Spotify,0.99995124,True,Entertainment,Subscription,0.62272143,False
+hungama-71131,Hungama,Entertainment,Hungama,Hungama,0.9999925,True,Entertainment,Subscription,0.58154035,False
+jiocinema_andhra,JioCinema,Entertainment,JioCinema,JioCinema,0.99993587,True,Entertainment,Subscription,0.5512691,False
+bharat gas maa,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99999285,True,Fuel,Utilities,0.72757155,False
+adani gas@sbi,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999932,True,Fuel,Utilities,0.52314,False
+indraprastha gas @icici,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999917,True,Utilities,Fuel,0.668448,False
+goibibo@sc,Goibibo,Travel,Goibibo,Goibibo,0.99999785,True,Travel,Transport,0.81464714,False
+cult fit bhopal,Cult Fit,Medical,Cult Fit,Cult Fit,0.9999894,True,Medical,Subscription,0.6437485,False
+indane_obc,Indane,Utilities,Indane,Indane,0.9999951,True,Utilities,Fuel,0.5284985,False
+home_uboi_8948,Home,Personal,Home,Personal,0.98696864,False,Personal,Personal,0.9968802,True
+jiocinema_kotak,JioCinema,Entertainment,JioCinema,JioCinema,0.99992836,True,Entertainment,Subscription,0.61612004,False
+disney hotstar@slice,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.99999726,True,Entertainment,Subscription,0.61990684,False
+gpay jiocinema coimbatore,JioCinema,Subscription,JioCinema,JioCinema,0.9955527,True,Subscription,Entertainment,0.73974884,False
+gpay torrent gas faridabad,Torrent Gas,Utilities,Torrent Gas,Torrent Gas,0.99977446,True,Utilities,Fuel,0.6025642,False
+clarks_46220,Clarks,Shopping,Clarks,Clarks,0.99999285,True,Shopping,Travel,0.71829605,False
+fortune_27736,Fortune,Travel,Fortune,Fortune,0.9999682,True,Travel,Groceries,0.6210078,False
+gaana-66560,Gaana,Subscription,Gaana,Gaana,0.9999995,True,Subscription,Entertainment,0.51033133,False
+hungama98440,Hungama,Subscription,Hungama,Hungama,0.99998736,True,Subscription,Entertainment,0.5009175,False
+hungama_16112,Hungama,Entertainment,Hungama,Hungama,0.99999356,True,Entertainment,Subscription,0.5703457,False
+wynk malad,Wynk,Subscription,Wynk,Wynk,0.99985445,True,Subscription,Entertainment,0.8868099,False
+jiocinema,JioCinema,Entertainment,JioCinema,JioCinema,0.9998845,True,Entertainment,Subscription,0.52328694,False
+netflix@andhra,Netflix,Subscription,Netflix,Netflix,0.99999976,True,Subscription,Entertainment,0.5280697,False
+goibibo@centralbank,Goibibo,Transport,Goibibo,Goibibo,0.9998815,True,Transport,Travel,0.52427804,False
+apple music@andhra,Apple Music,Entertainment,Apple Music,Apple Music,0.9999844,True,Entertainment,Subscription,0.66379327,False
+indraprastha gas_varanasi,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999166,True,Utilities,Fuel,0.5939856,False
+disney hotstar-14434,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.99999666,True,Entertainment,Subscription,0.6368727,False
+mahanagar gas-lower parel,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.999997,True,Utilities,Fuel,0.7290892,False
+spotify_kuu_yesbank,Spotify,Entertainment,Spotify,Spotify,0.99983096,True,Entertainment,Subscription,0.6184586,False
+gaana-94348,Gaana,Subscription,Gaana,Gaana,0.9999995,True,Subscription,Entertainment,0.5139574,False
+netflix_43219,Netflix,Subscription,Netflix,Netflix,1.0,True,Subscription,Entertainment,0.52255285,False
+bharat gas mumbai @bob,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99998844,True,Fuel,Utilities,0.715389,False
+sonyliv-01180,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999994,True,Entertainment,Subscription,0.6539073,False
+goibibo-pune,Goibibo,Transport,Goibibo,Goibibo,0.99995136,True,Transport,Travel,0.5836996,False
+bharat gas-12420,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.9999962,True,Fuel,Utilities,0.6739681,False
+mobikwik amazon,Amazon,Shopping,Amazon,Amazon,0.9994842,True,Shopping,Transport,0.8516874,False
+indraprastha gas_39243,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999994,True,Utilities,Fuel,0.68285805,False
+bharat gas_fi,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99999094,True,Fuel,Utilities,0.74352634,False
+adani gas @sc,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999896,True,Fuel,Utilities,0.5437837,False
+cairnindia,Cairn India,Fuel,Cairn India,Cairn India,0.99452513,True,Fuel,Utilities,0.5037927,False
+indraprastha gas99579,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999905,True,Utilities,Fuel,0.6882366,False
+dada@hdfcbank manali,Dada,Personal,Dada,Nanad,0.9060183,False,Personal,Personal,0.9992043,True
+clarks78696,Clarks,Shopping,Clarks,Clarks,0.99999547,True,Shopping,Travel,0.5878598,False
+gaana-63687,Gaana,Subscription,Gaana,Gaana,0.9999995,True,Subscription,Entertainment,0.502754,False
+mahanagar gas3581,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999976,True,Utilities,Fuel,0.6558468,False
+makemytrip@bob,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999889,True,Travel,Transport,0.66930795,False
+jiosaavn_58468,JioSaavn,Entertainment,JioSaavn,JioSaavn,0.9999162,True,Entertainment,Subscription,0.5122728,False
+gujarat gas-79002,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.99999344,True,Utilities,Fuel,0.6806579,False
+sonyliv_indianbank,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999962,True,Entertainment,Subscription,0.7334048,False
+indraprastha gas bazaar,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.99999917,True,Utilities,Fuel,0.7183914,False
+makemytrip-05828,MakeMyTrip,Travel,MakeMyTrip,MakeMyTrip,0.9999968,True,Travel,Transport,0.69236445,False
+fortune gur,Fortune,Travel,Fortune,Fortune,0.99989784,True,Travel,Groceries,0.5817245,False
+jiosaavn @onecard,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99988115,True,Subscription,Entertainment,0.5016093,False
+netflix@axl,Netflix,Subscription,Netflix,Netflix,0.99999976,True,Subscription,Entertainment,0.6583965,False
+indane_66630,Indane,Utilities,Indane,Indane,0.9999975,True,Utilities,Fuel,0.55153334,False
+goibibo bdq @dbs,Goibibo,Travel,Goibibo,Goibibo,0.9999926,True,Travel,Transport,0.5090913,False
+zee5 @niyo,ZEE5,Entertainment,ZEE5,ZEE5,0.999997,True,Entertainment,Subscription,0.726722,False
+hungama @vijaya,Hungama,Entertainment,Hungama,Hungama,0.9999926,True,Entertainment,Subscription,0.57518256,False
+goibibo_sc,Goibibo,Travel,Goibibo,Goibibo,0.9999987,True,Travel,Transport,0.8132253,False
+spotify_calicut,Spotify,Subscription,Spotify,Spotify,0.9999876,True,Subscription,Entertainment,0.51313406,False
+netflix @bob,Netflix,Entertainment,Netflix,Netflix,0.9999999,True,Entertainment,Subscription,0.53346586,False
+disney hotstar amritsar @uboi,Disney Hotstar,Entertainment,Disney Hotstar,Disney Hotstar,0.9999931,True,Entertainment,Subscription,0.5154376,False
+jiosaavnplaza,JioSaavn,Entertainment,JioSaavn,JioSaavn,0.999853,True,Entertainment,Subscription,0.5018585,False
+bharat gas72573,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99998415,True,Fuel,Utilities,0.65709955,False
+jiocinema_17432,JioCinema,Entertainment,JioCinema,JioCinema,0.9999696,True,Entertainment,Subscription,0.5732568,False
+sonyliv_madurai,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999982,True,Entertainment,Subscription,0.6123649,False
+zee5_upi,ZEE5,Subscription,ZEE5,ZEE5,0.9999938,True,Subscription,Entertainment,0.52567333,False
+mahanagar gas_65078,Mahanagar Gas,Utilities,Mahanagar Gas,Mahanagar Gas,0.99999964,True,Utilities,Fuel,0.6680533,False
+jiosaavn pos 61531,JioSaavn,Subscription,JioSaavn,JioSaavn,0.99997294,True,Subscription,Entertainment,0.5284778,False
+netflix_yesbank,Netflix,Entertainment,Netflix,Netflix,0.9999999,True,Entertainment,Subscription,0.7545877,False
+adani gas pay,Adani Gas,Fuel,Adani Gas,Adani Gas,0.9999856,True,Fuel,Utilities,0.5266252,False
+fortune_28066,Fortune,Travel,Fortune,Fortune,0.99996984,True,Travel,Groceries,0.6325963,False
+indraprastha gas_56816,Indraprastha Gas,Utilities,Indraprastha Gas,Indraprastha Gas,0.9999993,True,Utilities,Fuel,0.6886004,False
+bharat gas-73168,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.99999654,True,Fuel,Utilities,0.67637247,False
+goibibo11775,Goibibo,Travel,Goibibo,Goibibo,0.9999715,True,Travel,Transport,0.79059744,False
+torrent gas_cok,Torrent Gas,Utilities,Torrent Gas,Torrent Gas,0.9999882,True,Utilities,Fuel,0.5216852,False
+wynk ranchi,Wynk,Entertainment,Wynk,Wynk,0.99999976,True,Entertainment,Subscription,0.614571,False
+bharat gas64602,Bharat Gas,Fuel,Bharat Gas,Bharat Gas,0.9999893,True,Fuel,Utilities,0.623041,False
+wynk-90120,Wynk,Entertainment,Wynk,Wynk,0.9999982,True,Entertainment,Subscription,0.6104563,False
+apple music-bangalore,Apple Music,Entertainment,Apple Music,Apple Music,0.9997915,True,Entertainment,Subscription,0.7200902,False
+goibibo-47057,Goibibo,Travel,Goibibo,Goibibo,0.9999906,True,Travel,Transport,0.64341116,False
+hungama-61359,Hungama,Entertainment,Hungama,Hungama,0.99999404,True,Entertainment,Subscription,0.5781077,False
+jiocinema@corporation,JioCinema,Entertainment,JioCinema,JioCinema,0.9999014,True,Entertainment,Subscription,0.5205132,False
+sonyliv@boi,SonyLIV,Entertainment,SonyLIV,SonyLIV,0.9999995,True,Entertainment,Subscription,0.70538837,False
+adani gas@federal,Adani Gas,Fuel,Adani Gas,Adani Gas,0.999985,True,Fuel,Utilities,0.7067341,False
+indane_khar,Indane,Utilities,Indane,Indane,0.99999166,True,Utilities,Fuel,0.5797877,False
+jiocinema_09932,JioCinema,Entertainment,JioCinema,JioCinema,0.9999728,True,Entertainment,Subscription,0.56199646,False
+indane46185,Indane,Utilities,Indane,Indane,0.999998,True,Utilities,Fuel,0.57334304,False
+w india 90668,W,Shopping,W,Fabindia,0.51833624,False,Shopping,Shopping,0.9645625,True
+fortune@sc,Fortune,Travel,Fortune,Fortune,0.9999778,True,Travel,Groceries,0.5856668,False
+spotify91085,Spotify,Entertainment,Spotify,Spotify,0.99997604,True,Entertainment,Subscription,0.5818447,False
+gujarat gas vadodara,Gujarat Gas,Utilities,Gujarat Gas,Gujarat Gas,0.9991984,True,Utilities,Fuel,0.7844924,False
+spotify_10985,Spotify,Entertainment,Spotify,Spotify,0.99995935,True,Entertainment,Subscription,0.62096643,False
+zee5_block,ZEE5,Entertainment,ZEE5,ZEE5,0.9999485,True,Entertainment,Subscription,0.58653504,False
+goibibo@fi,Goibibo,Travel,Goibibo,Goibibo,0.99998283,True,Travel,Transport,0.5802943,False

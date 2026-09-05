@@ -536,7 +536,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
     return Column(
       children: [
         SizedBox(
-          height: 165,
+          height: 155,
           child: AnimatedBuilder(
             animation: _chartAnim,
             builder: (context, _) => BarChart(
@@ -585,7 +585,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                         final isPeak = peakWeekIndex == i;
 
                         return Padding(
-                          padding: const EdgeInsets.only(top: 4),
+                          padding: const EdgeInsets.only(top: 6),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -593,7 +593,6 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                                 'Wk ${i + 1}',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  height: 1.15,
                                   fontWeight: isSelected || isPeak
                                       ? FontWeight.w800
                                       : FontWeight.w600,
@@ -604,12 +603,10 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                                           : AppTheme.textPrimary),
                                 ),
                               ),
-                              const SizedBox(height: 2),
                               Text(
                                 weekLabels[i],
                                 style: TextStyle(
-                                  fontSize: 9.5,
-                                  height: 1.1,
+                                  fontSize: 9,
                                   fontWeight: FontWeight.w500,
                                   color: isSelected
                                       ? AppTheme.primary
@@ -620,7 +617,7 @@ class _HomeAnalyticsChartWidgetState extends State<HomeAnalyticsChartWidget>
                           ),
                         );
                       },
-                      reservedSize: 42,
+                      reservedSize: 34,
                     ),
                   ),
                   leftTitles: const AxisTitles(

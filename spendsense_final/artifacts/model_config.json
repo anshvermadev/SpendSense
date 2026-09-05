@@ -1,0 +1,64 @@
+{
+    "project": "SpendSense",
+    "version": "V3 Production",
+    "input": {
+        "shape": [
+            1,
+            128
+        ],
+        "dtype": "int32"
+    },
+    "architecture": {
+        "embedding_dim": 64,
+        "cnn_filters": 128,
+        "kernel_sizes": [
+            3,
+            5,
+            7
+        ],
+        "dense_units": 128,
+        "dropout": 0.3
+    },
+    "vocabulary_size": 43,
+    "merchant_classes": 734,
+    "category_classes": 15,
+    "keras_evaluation": {
+        "merchant": {
+            "accuracy": 0.9986065954482118,
+            "macro_precision": 0.9915000160983933,
+            "macro_recall": 0.991820064449434,
+            "macro_f1": 0.9915518263601828,
+            "weighted_f1": 0.9983870298106529
+        },
+        "category": {
+            "accuracy": 0.9675801207617278,
+            "macro_precision": 0.9645262699535435,
+            "macro_recall": 0.9636841437033342,
+            "macro_f1": 0.9637301961616271,
+            "weighted_f1": 0.9674859486845075
+        }
+    },
+    "tflite_validation": {
+        "float32": {
+            "model": "spendsense_float32.tflite",
+            "size_mb": 1.0436859130859375,
+            "merchant_agreement": 1.0,
+            "category_agreement": 1.0,
+            "status": "validated"
+        },
+        "dynamic_quant": {
+            "model": "spendsense_dynamic_quant.tflite",
+            "size_mb": 0.2840728759765625,
+            "merchant_agreement": 1.0,
+            "category_agreement": 0.9967487227124942,
+            "status": "validated"
+        },
+        "float16": {
+            "model": "spendsense_float16.tflite",
+            "size_mb": 0.5264816284179688,
+            "merchant_agreement": 1.0,
+            "category_agreement": 1.0,
+            "status": "validated"
+        }
+    }
+}

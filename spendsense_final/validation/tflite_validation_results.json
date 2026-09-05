@@ -1,0 +1,23 @@
+{
+    "float32": {
+        "model": "spendsense_float32.tflite",
+        "size_mb": 1.0436859130859375,
+        "merchant_agreement": 1.0,
+        "category_agreement": 1.0,
+        "status": "validated"
+    },
+    "dynamic_quant": {
+        "model": "spendsense_dynamic_quant.tflite",
+        "size_mb": 0.2840728759765625,
+        "merchant_agreement": 1.0,
+        "category_agreement": 0.9967487227124942,
+        "status": "validated"
+    },
+    "float16": {
+        "model": "spendsense_float16.tflite",
+        "size_mb": 0.5264816284179688,
+        "merchant_agreement": 1.0,
+        "category_agreement": 1.0,
+        "status": "validated"
+    }
+}

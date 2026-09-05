@@ -1,0 +1,1025 @@
+SpendSense — Transaction Intelligence Model
+Lightweight On-Device Transaction Classification Model
+
+SpendSense is a lightweight machine learning system designed to understand and categorize financial transactions from parsed transaction data.
+
+The model is designed specifically for mobile deployment, with the final inference model exported in TensorFlow Lite (.tflite) format.
+
+Unlike a large language model or generative system, SpendSense uses a compact supervised deep learning architecture optimized for:
+
+Fast inference
+Low memory consumption
+Offline mobile execution
+Structured transaction classification
+Privacy-preserving on-device inference
+1. Problem Statement
+
+Financial transactions can originate from multiple sources such as:
+
+Bank SMS
+UPI notifications
+Card transactions
+Bank statements
+Payment applications
+
+A raw transaction may look like:
+
+ICICI Bank Acct XX888 debited for Rs 45.00 on 02-Aug-26;
+BHUPENDRA DILIP credited.
+UPI:621412961083.
+Call 18002662 for dispute.
+SMS BLOCK 888 to 9215676766.
+
+However, raw transaction messages are inconsistent and noisy.
+
+Different banks use different formats, transaction descriptions may vary, and merchant names may not always be explicitly standardized.
+
+Therefore, SpendSense follows a pipeline-based architecture.
+
+Raw Financial Evidence
+        │
+        ▼
+Transaction Parsing Layer
+        │
+        ▼
+Structured Transaction Object
+        │
+        ▼
+SpendSense Classification Model
+        │
+        ├── Merchant Prediction
+        │
+        └── Category Prediction
+        │
+        ▼
+Final Categorized Transaction
+
+The machine learning model is not responsible for parsing financial SMS.
+
+Parsing and extraction are handled before the model.
+
+This separation is intentional and important for reliability.
+
+2. Input Data Architecture
+
+The application stores parsed transactions in the following structured format:
+
+Map<String, dynamic> toJson() => {
+    'id': id,
+    'date': date.toIso8601String(),
+    'amount': amount,
+    'type': type,
+    'paymentMode': paymentMode,
+    'merchant': merchant,
+    'category': category,
+    'subcategory': subcategory,
+    'source': source,
+    'rawText': rawText,
+    'accountNo': accountNo,
+    'bankRefNo': bankRefNo,
+    'isSubscription': isSubscription,
+};
+
+Not every field is predicted by the machine learning model.
+
+The architecture separates:
+
+Deterministic fields
+
+These fields are extracted directly by the transaction parsing system.
+
+id
+date
+amount
+type
+paymentMode
+source
+rawText
+accountNo
+bankRefNo
+isSubscription
+Machine Learning Classification Fields
+
+These fields are predicted by SpendSense:
+
+merchant
+category
+
+The final architecture therefore combines:
+
+Rule-Based / Parser Output
+        +
+Machine Learning Predictions
+        ↓
+Complete Structured Transaction
+3. Model Input
+
+The SpendSense model receives the transaction narration after preprocessing.
+
+Example:
+
+ICICI Bank Acct XX888 debited for Rs 45.00 on 02-Aug-26;
+BHUPENDRA DILIP credited.
+UPI:621412961083.
+
+Before inference, the text undergoes deterministic preprocessing.
+
+Raw Transaction Text
+        │
+        ▼
+Lowercase Conversion
+        │
+        ▼
+Whitespace Normalization
+        │
+        ▼
+Character-Level Tokenization
+        │
+        ▼
+Integer Token Sequence
+        │
+        ▼
+Padding / Truncation
+        │
+        ▼
+Fixed Length Input
+
+The final model input is:
+
+Shape: [1, 128]
+
+Data Type: int32
+
+Example representation:
+
+[12, 45, 19, 19, 23, 67, 8, 91, ...]
+
+Each integer represents a character from the learned vocabulary.
+
+4. Why Character-Level Tokenization?
+
+Traditional NLP systems often use word-level tokenization.
+
+For example:
+
+BHUPENDRA DILIP
+
+would be treated as words.
+
+However, financial transaction data is highly inconsistent.
+
+Examples include:
+
+NETFLIX
+Netflix India
+NETFLIX.COM
+NETFLIX*BILLING
+NFX PAYMENT
+NETFLIX MUMBAI
+
+Similarly, merchant names may appear as:
+
+SWIGGY
+SWIGGY INSTAMART
+SWIGGY*ORDER
+SWIGGY ONLINE
+
+Bank messages also contain:
+
+Account masking
+Transaction IDs
+UPI references
+Abbreviations
+Special characters
+Bank-specific formatting
+Misspellings
+Merchant variations
+
+Character-level tokenization is more robust for this type of semi-structured financial text.
+
+Advantages
+Handles spelling variations
+Handles abbreviations
+Handles unknown words
+Handles transaction IDs
+Handles bank-specific formatting
+Requires a small vocabulary
+Easy to reproduce on mobile
+TFLite compatible
+No external tokenizer dependency
+
+The mobile application only needs:
+
+vocabulary.json
++
+tokenizer_config.json
+
+to reproduce the exact preprocessing pipeline.
+
+5. Model Architecture
+
+SpendSense uses a Multi-Task Character-Level CNN architecture.
+
+The architecture consists of:
+
+Integer Token Input
+        │
+        ▼
+Embedding Layer
+        │
+        ├─────────────────┐
+        │                 │
+        ▼                 ▼
+   Conv1D (3)        Conv1D (5)
+        │                 │
+        ▼                 ▼
+Global Max Pool    Global Max Pool
+        │                 │
+        └────────┬────────┘
+                 │
+                 ▼
+             Conv1D (7)
+                 │
+                 ▼
+          Global Max Pool
+                 │
+                 ▼
+           Concatenation
+                 │
+                 ▼
+             Dense Layer
+                 │
+                 ▼
+              Dropout
+                 │
+         ┌───────┴────────┐
+         │                │
+         ▼                ▼
+ Merchant Head      Category Head
+         │                │
+         ▼                ▼
+   Merchant Class     Category Class
+6. Detailed Architecture
+6.1 Input Layer
+
+The model receives a fixed-length sequence.
+
+Input Shape: (128,)
+Input Type: int32
+
+Example:
+
+[45, 12, 78, 91, 23, 4, 0, 0, 0, ...]
+
+Where:
+
+0 = Padding Token
+1 = Unknown Character
+2+ = Vocabulary Characters
+6.2 Embedding Layer
+
+The embedding layer converts integer character IDs into dense numerical vectors.
+
+Vocabulary ID
+      │
+      ▼
+Embedding Layer
+      │
+      ▼
+Dense Character Representation
+
+Configuration:
+
+Embedding Dimension: 64
+
+Instead of treating characters as independent IDs, the model learns relationships between character patterns.
+
+6.3 Multi-Scale CNN
+
+The model uses three parallel convolution branches.
+
+Conv1D Kernel Size = 3
+Conv1D Kernel Size = 5
+Conv1D Kernel Size = 7
+
+Each branch learns different pattern sizes.
+
+Kernel Size 3
+
+Captures short character patterns.
+
+Examples:
+
+upi
+pay
+deb
+Kernel Size 5
+
+Captures medium patterns.
+
+Examples:
+
+swigg
+netfl
+cred
+Kernel Size 7
+
+Captures longer transaction signatures.
+
+Examples:
+
+netflix
+zomato
+amazon
+
+This allows the model to detect merchant and transaction patterns at multiple scales.
+
+7. Why CNN Instead of LSTM or Transformer?
+
+Several architectures were considered.
+
+Architecture	Advantages	Limitations
+LSTM	Sequence understanding	Slower inference
+GRU	Smaller than LSTM	Sequential computation
+Transformer	Powerful NLP architecture	Heavy for mobile
+BERT	High accuracy	Too large for lightweight deployment
+CNN	Fast, compact, parallelizable	Less global context
+Multi-Scale CNN	Fast + lightweight + pattern detection	Selected
+
+The transaction classification problem is primarily a pattern recognition problem.
+
+For example:
+
+NETFLIX
+ZOMATO
+SWIGGY
+AMAZON
+UBER
+UPI
+POS
+NEFT
+
+These patterns do not necessarily require deep language understanding.
+
+CNNs are highly effective at detecting local patterns.
+
+Therefore, the selected architecture provides a good balance between:
+
+Accuracy
++
+Model Size
++
+Inference Speed
++
+Mobile Compatibility
+8. Multi-Task Learning Architecture
+
+Instead of training completely separate models, SpendSense uses a shared neural network.
+
+                Shared Feature Extractor
+                        │
+                        │
+                ┌───────┴────────┐
+                │                │
+                ▼                ▼
+         Merchant Task      Category Task
+
+The model learns common transaction features and then uses separate output heads.
+
+Output Head 1
+Merchant Classification
+Output Head 2
+Category Classification
+
+For example:
+
+Input:
+"Payment made to ZOMATO"
+
+            Shared Model
+                  │
+        ┌─────────┴─────────┐
+        ▼                   ▼
+    Merchant             Category
+        │                   │
+        ▼                   ▼
+    ZOMATO              Food & Dining
+9. Why Multi-Task Learning?
+
+Merchant and category information are strongly related.
+
+Example:
+
+Merchant: NETFLIX
+
+Possible Categories:
+- Entertainment
+- Subscription
+- Digital Services
+
+Another example:
+
+Merchant: SWIGGY
+
+Possible Categories:
+- Food & Dining
+- Groceries
+
+The same transaction patterns contribute to both tasks.
+
+Training separate models would duplicate feature extraction.
+
+Multi-task learning allows:
+
+Transaction Pattern
+       │
+       ▼
+Shared Representation
+       │
+       ├── Merchant Knowledge
+       │
+       └── Category Knowledge
+
+Advantages:
+
+Reduced model size
+Shared learning
+Faster inference
+Lower mobile memory usage
+Potential improvement in generalization
+10. Model Output
+
+The model produces two probability distributions.
+
+Merchant Output
+
+Example:
+
+{
+  "ZOMATO": 0.91,
+  "SWIGGY": 0.04,
+  "AMAZON": 0.02,
+  "UNKNOWN": 0.03
+}
+
+The predicted merchant is:
+
+ZOMATO
+
+with confidence:
+
+91%
+Category Output
+
+Example:
+
+{
+  "Food & Dining": 0.96,
+  "Groceries": 0.02,
+  "Entertainment": 0.01,
+  "P2P": 0.01
+}
+
+The predicted category is:
+
+Food & Dining
+
+with confidence:
+
+96%
+11. Final Application Output
+
+The model predictions are merged with the deterministic parser output.
+
+Input
+Raw SMS
+
+↓
+
+Parser Output
+{
+    "date": "2026-08-02",
+    "amount": 45.0,
+    "type": "debit",
+    "paymentMode": "UPI",
+    "source": "SMS",
+    "accountNo": "XX888",
+    "bankRefNo": "621412961083",
+    "rawText": "ICICI Bank Acct..."
+}
+
+↓
+
+SpendSense Model Prediction
+{
+    "merchant": "BHUPENDRA DILIP",
+    "category": "P2P"
+}
+
+↓
+
+Final Structured Transaction
+{
+    "id": "generated-id",
+    "date": "2026-08-02T00:00:00.000Z",
+    "amount": 45.0,
+    "type": "debit",
+    "paymentMode": "UPI",
+    "merchant": "BHUPENDRA DILIP",
+    "category": "P2P",
+    "subcategory": null,
+    "source": "SMS",
+    "rawText": "ICICI Bank Acct XX888 debited for Rs 45.00...",
+    "accountNo": "XX888",
+    "bankRefNo": "621412961083",
+    "isSubscription": false
+}
+12. What the Model Does NOT Predict
+
+The model intentionally does not predict all transaction fields.
+
+The following fields should come from deterministic parsing:
+
+Field	Source
+id	Application
+date	Transaction parser
+amount	Transaction parser
+type	Transaction parser
+paymentMode	Transaction parser
+source	Transaction source
+rawText	Original transaction
+accountNo	Transaction parser
+bankRefNo	Transaction parser
+isSubscription	Rule engine / future classifier
+
+The model focuses on the fields where pattern recognition provides the most value:
+
+Merchant
+Category
+
+This design reduces unnecessary model complexity.
+
+13. Training Dataset
+
+The target dataset scale is:
+
+Metric	Target
+Merchants	400–600
+Examples per merchant	150–300
+Total transactions	80,000–150,000
+Training Split	~80%
+Validation Split	~10%
+Test Split	~10%
+
+The dataset contains structured examples of transaction narrations mapped to known merchant and category labels.
+
+14. Dataset Splitting Strategy
+
+A standard random train/test split is insufficient for merchant classification.
+
+Consider:
+
+Merchant: Buddy
+
+Training Samples: 0
+Validation Samples: 10
+
+The model would be asked to predict a class it has never seen.
+
+This causes errors such as:
+
+ValueError:
+y contains previously unseen labels
+
+Therefore SpendSense uses a merchant-aware splitting strategy.
+
+Dataset
+   │
+   ▼
+Group Transactions by Merchant
+   │
+   ├── Merchant A
+   │      ├── Train
+   │      ├── Validation
+   │      └── Test
+   │
+   ├── Merchant B
+   │      ├── Train
+   │      ├── Validation
+   │      └── Test
+   │
+   └── Rare Merchant
+          │
+          └── Training Only
+
+This guarantees:
+
+Every merchant evaluated during validation or testing has already appeared in the training dataset.
+
+15. Closed-Set Classification
+
+The current model operates as a closed-set classifier.
+
+This means the merchant output layer contains a fixed list of known merchants.
+
+Example:
+
+Known Merchant Classes
+
+ZOMATO
+SWIGGY
+NETFLIX
+AMAZON
+UBER
+...
+
+The model predicts one of these known classes.
+
+However, real-world transactions may contain previously unseen merchants.
+
+Example:
+
+Input:
+PAYMENT TO NEW_LOCAL_STORE_123
+
+The model should not blindly classify it as:
+
+ZOMATO
+
+Therefore production deployment should include a confidence threshold.
+
+Example:
+
+Prediction:
+Merchant = ZOMATO
+Confidence = 0.31
+
+Since confidence is low:
+
+Final Merchant = UNKNOWN
+
+Recommended production logic:
+
+if confidence >= threshold:
+    accept_prediction
+else:
+    UNKNOWN
+
+This is important for preventing incorrect merchant assignments.
+
+16. P2P Category
+
+P2P is intentionally included as an important category.
+
+Examples include:
+
+UPI payment to individual
+Money transferred to friend
+Payment to personal contact
+Direct account transfer
+
+Examples:
+
+BHUPENDRA DILIP
+RAHUL KUMAR
+PRIYA SHARMA
+
+These transactions may not belong to traditional commercial categories.
+
+Therefore:
+
+Unknown Commercial Category
+          ≠
+Automatically P2P
+
+P2P should represent transactions identified as person-to-person transfers based on learned transaction patterns and dataset labels.
+
+The category output may therefore include:
+
+Food & Dining
+Groceries
+Entertainment
+Transport
+Shopping
+Utilities
+Healthcare
+Education
+Travel
+Subscription
+P2P
+Others
+17. Why We Do Not Use an LLM
+
+Large Language Models can understand transaction descriptions but are not suitable for this deployment architecture.
+
+Problems include:
+
+Large model size
+API dependency
+Internet dependency
+Latency
+Operational cost
+Privacy concerns
+Difficult mobile deployment
+
+SpendSense instead uses a specialized model.
+
+General LLM
+      │
+      ▼
+Large + Expensive + Cloud Dependent
+
+versus
+
+SpendSense CNN
+      │
+      ▼
+Small + Fast + Offline + On-Device
+
+The model is trained specifically for financial transaction classification.
+
+18. TensorFlow Lite Deployment
+
+The final model is exported as:
+
+.tflite
+
+TensorFlow Lite is used because the target platform is mobile.
+
+The deployment package contains:
+
+spendsense_final/
+│
+├── models/
+│   ├── spendsense_v3.keras
+│   ├── spendsense_float32.tflite
+│   ├── spendsense_dynamic_quant.tflite
+│   └── spendsense_float16.tflite
+│
+├── artifacts/
+│   ├── vocabulary.json
+│   ├── tokenizer_config.json
+│   ├── merchant_labels.json
+│   ├── category_labels.json
+│   └── model_config.json
+│
+├── evaluation/
+│   ├── evaluation_results.json
+│   ├── merchant_classification_report.csv
+│   ├── category_classification_report.csv
+│   ├── incorrect_predictions.csv
+│   └── plots/
+│
+└── validation/
+    └── tflite_validation_results.json
+19. Mobile Inference Pipeline
+
+The Flutter/mobile application follows this process.
+
+Raw Transaction
+       │
+       ▼
+Transaction Parser
+       │
+       ▼
+Structured Fields Extracted
+       │
+       ▼
+Transaction Text
+       │
+       ▼
+Load vocabulary.json
+       │
+       ▼
+Character → Integer IDs
+       │
+       ▼
+Pad to Length 128
+       │
+       ▼
+int32 Tensor
+       │
+       ▼
+TFLite Model
+       │
+       ├───────────────┐
+       ▼               ▼
+ Merchant Output   Category Output
+       │               │
+       ▼               ▼
+Confidence Check  Confidence Check
+       │               │
+       └───────┬───────┘
+               ▼
+      Final Structured Transaction
+20. Why Integer Inputs Were Used
+
+The model does not accept raw strings directly.
+
+Instead:
+
+Transaction Text
+        ↓
+Tokenizer
+        ↓
+Integer Sequence
+        ↓
+TFLite Model
+
+This architecture was selected because text preprocessing layers can introduce compatibility issues during TFLite conversion.
+
+Separating preprocessing provides:
+
+Reliable TFLite conversion
+Deterministic mobile inference
+Smaller deployment complexity
+No TensorFlow text dependency
+Easier debugging
+Identical preprocessing across training and mobile inference
+21. Model Accuracy Goal
+
+The target performance objective is:
+
+Overall Category Accuracy:
+94% – 97%
+
+However, accuracy must not be evaluated alone.
+
+The evaluation pipeline includes:
+
+Accuracy
+Precision
+Recall
+Macro F1 Score
+Weighted F1 Score
+Classification Reports
+Confusion Matrices
+Incorrect Prediction Analysis
+
+For category classification, Macro F1 is particularly important because it prevents large classes from hiding poor performance on smaller categories.
+
+22. Evaluation Strategy
+
+The final test set is never used during training.
+
+Training Set
+      │
+      ▼
+Model Learning
+
+Validation Set
+      │
+      ▼
+Hyperparameter Monitoring
+Early Stopping
+Learning Rate Adjustment
+
+Test Set
+      │
+      ▼
+Final Performance Evaluation
+
+The final evaluation checks both:
+
+Keras Model Predictions
+
+and
+
+TFLite Model Predictions
+
+This ensures that conversion to TensorFlow Lite does not significantly alter model predictions.
+
+23. Production Confidence Strategy
+
+For production use, predictions should not always be accepted blindly.
+
+Recommended architecture:
+
+Model Prediction
+       │
+       ▼
+Confidence Score
+       │
+       ├── High Confidence
+       │        │
+       │        ▼
+       │   Accept Prediction
+       │
+       └── Low Confidence
+                │
+                ▼
+        UNKNOWN / REVIEW
+
+Example:
+
+Merchant Prediction
+
+NETFLIX
+Confidence: 97%
+
+Result:
+
+Accept
+
+Example:
+
+Merchant Prediction
+
+NETFLIX
+Confidence: 28%
+
+Result:
+
+UNKNOWN
+
+This prevents the closed-set classifier from forcing incorrect classifications for unseen merchants.
+
+24. Architecture Decisions Summary
+Decision	Choice	Reason
+Model Type	Multi-Task CNN	Lightweight and fast
+Input	Character-level text	Robust to transaction variations
+Sequence Length	128	Mobile-friendly fixed input
+Embedding	64 dimensions	Compact learned representation
+CNN Kernels	3, 5, 7	Multi-scale pattern detection
+Output Heads	2	Merchant + Category
+Training	Supervised Learning	Labels already available
+Split	Merchant-aware	Prevent unseen labels
+Deployment	TensorFlow Lite	Mobile compatibility
+Input Type	int32	Reliable TFLite inference
+Unknown Handling	Confidence threshold	Avoid forced predictions
+25. Final Architecture
+                    SPENDSENSE ARCHITECTURE
+
+
+                 FINANCIAL TRANSACTION
+                          │
+                          ▼
+                 TRANSACTION PARSER
+                          │
+             ┌────────────┴────────────┐
+             │                         │
+             ▼                         ▼
+     STRUCTURED FIELDS            TRANSACTION TEXT
+             │                         │
+             │                         ▼
+             │                TEXT NORMALIZATION
+             │                         │
+             │                         ▼
+             │              CHARACTER TOKENIZATION
+             │                         │
+             │                         ▼
+             │              INTEGER SEQUENCE [128]
+             │                         │
+             │                         ▼
+             │                  EMBEDDING LAYER
+             │                         │
+             │          ┌──────────────┼──────────────┐
+             │          │              │              │
+             │          ▼              ▼              ▼
+             │       CNN (3)        CNN (5)        CNN (7)
+             │          │              │              │
+             │          └──────────────┼──────────────┘
+             │                         │
+             │                         ▼
+             │                  FEATURE MERGING
+             │                         │
+             │                         ▼
+             │                    DENSE LAYER
+             │                         │
+             │                ┌────────┴────────┐
+             │                │                 │
+             │                ▼                 ▼
+             │          MERCHANT HEAD      CATEGORY HEAD
+             │                │                 │
+             │                ▼                 ▼
+             │           Merchant          Category
+             │
+             └──────────────────────┬───────────────────────┘
+                                    │
+                                    ▼
+                     FINAL STRUCTURED TRANSACTION
+26. Final Output Format
+
+The complete SpendSense pipeline ultimately produces data compatible with the application's transaction model:
+
+Map<String, dynamic> toJson() => {
+    'id': id,
+    'date': date.toIso8601String(),
+    'amount': amount,
+    'type': type,
+    'paymentMode': paymentMode,
+
+    // SpendSense ML Predictions
+    'merchant': merchant,
+    'category': category,
+
+    'subcategory': subcategory,
+    'source': source,
+    'rawText': rawText,
+    'accountNo': accountNo,
+    'bankRefNo': bankRefNo,
+    'isSubscription': isSubscription,
+};
+Project Principle
+
+Parsing extracts facts. Machine learning recognizes patterns. The final system combines both to produce an intelligent structured transaction record.
