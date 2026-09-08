@@ -1,6 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../services/database_service.dart';
 import '../services/categorization_service.dart';
+import '../presentation/home_screen/widgets/uncertain_transaction_modal.dart';
+import '../routes/app_routes.dart';
 
 class AppState extends ChangeNotifier {
   static final AppState _instance = AppState._internal();
@@ -12,12 +14,37 @@ class AppState extends ChangeNotifier {
 
   bool _initialized = false;
   bool get initialized => _initialized;
+  bool _modalShown = false;
+
+  void promptUncertainTransactionModal() {
+    if (_modalShown) return;
+    final uncertain = getUncertainTransactions();
+    if (uncertain.isEmpty) return;
+
+    final navContext = rootNavigatorKey.currentContext;
+    if (navContext == null) return;
+
+    _modalShown = true;
+    UncertainTransactionModal.show(
+      navContext,
+      uncertain.first,
+      onCompleted: () {
+        _modalShown = false;
+        Future.delayed(const Duration(milliseconds: 300), () {
+          promptUncertainTransactionModal();
+        });
+      },
+    );
+  }
 
   Future<void> init() async {
     await _db.init();
     await _sanitizeLegacyTransactions();
     _initialized = true;
     notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      promptUncertainTransactionModal();
+    });
   }
 
   Future<void> _sanitizeLegacyTransactions() async {
@@ -82,6 +109,9 @@ class AppState extends ChangeNotifier {
   Future<void> refresh() async {
     await _db.refresh();
     notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      promptUncertainTransactionModal();
+    });
   }
 
   DatabaseService get db => _db;
@@ -115,6 +145,9 @@ class AppState extends ChangeNotifier {
   Future<void> addTransaction(Transaction txn) async {
     await _db.addTransaction(txn);
     notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      promptUncertainTransactionModal();
+    });
   }
 
   Future<void> addManualTransaction({
@@ -152,16 +185,85 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  final Set<String> _dismissedUncertainTxnIds = {};
+
+  /// Retrieves list of unique transactions that need user categorization guidance.
+  /// Triggered for transactions marked Uncategorised, Friends & Family, or ambiguous peer transfers
+  /// where no sticky override has been established yet.
+  List<Transaction> getUncertainTransactions() {
+    final uncertain = <Transaction>[];
+    final seenMerchants = <String>{};
+
+    for (final txn in _db.allTransactions) {
+      if (_dismissedUncertainTxnIds.contains(txn.id)) continue;
+
+      final merchant = txn.merchant.trim();
+      final merchantLower = merchant.toLowerCase();
+      if (merchantLower.isEmpty || merchantLower == 'unknown') continue;
+
+      // If user has already taught the app a sticky override for this merchant, skip!
+      if (_db.getCategoryOverride(merchant) != null) continue;
+
+      final catLower = txn.category.trim().toLowerCase();
+      final isUncertain = catLower == 'uncategorised' ||
+          catLower == 'uncategorized' ||
+          catLower == 'unknown' ||
+          catLower.contains('friend') ||
+          catLower.contains('peer');
+
+      if (isUncertain) {
+        if (!seenMerchants.contains(merchantLower)) {
+          seenMerchants.add(merchantLower);
+          uncertain.add(txn);
+        }
+      }
+    }
+
+    return uncertain;
+  }
+
+  void dismissUncertainTransaction(String id) {
+    _dismissedUncertainTxnIds.add(id);
+    notifyListeners();
+  }
+
   Future<void> updateTransactionCategory(
     String id,
     String category,
-    String subcategory,
-  ) async {
-    await _db.updateTransactionCategory(id, category, subcategory);
+    String subcategory, {
+    bool updateAllForMerchant = true,
+  }) async {
+    await _db.updateTransactionCategory(
+      id,
+      category,
+      subcategory,
+      updateAllForMerchant: updateAllForMerchant,
+    );
+    notifyListeners();
+  }
+
+  Future<void> assignMerchantCategory({
+    required String merchant,
+    required String category,
+    required String subcategory,
+    bool updateAllForMerchant = true,
+  }) async {
+    if (updateAllForMerchant) {
+      await _db.updateCategoryForMerchant(merchant, category, subcategory);
+    } else {
+      await _db.addMerchantOverride(
+        MerchantOverride(
+          merchantKeyword: merchant.trim().toLowerCase(),
+          category: category,
+          subcategory: subcategory,
+        ),
+      );
+    }
     notifyListeners();
   }
 
   Future<void> deleteTransaction(String id) async {
+    _dismissedUncertainTxnIds.remove(id);
     await _db.deleteTransaction(id);
     notifyListeners();
   }

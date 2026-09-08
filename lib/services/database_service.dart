@@ -226,10 +226,12 @@ class DatabaseService {
   static const String _merchantOverridesKey = 'merchant_overrides';
   static const String _userSettingsKey = 'user_settings';
   static const String _onboardingDoneKey = 'onboarding_done';
+  static const String _deletedSignaturesKey = 'deleted_signatures';
 
   List<Transaction> _transactions = [];
   List<Budget> _budgets = [];
   List<MerchantOverride> _merchantOverrides = [];
+  List<String> _deletedSignatures = [];
   UserSettings _userSettings = UserSettings();
   bool _initialized = false;
 
@@ -244,12 +246,20 @@ class DatabaseService {
     if (_initialized) return;
     final prefs = await SharedPreferences.getInstance();
 
+    // Load deleted signatures
+    final deletedJson = prefs.getString(_deletedSignaturesKey);
+    if (deletedJson != null) {
+      final list = jsonDecode(deletedJson) as List<dynamic>;
+      _deletedSignatures = list.map((e) => e as String).toList();
+    }
+
     // Load transactions
     final txnJson = prefs.getString(_transactionsKey);
     if (txnJson != null) {
       final list = jsonDecode(txnJson) as List<dynamic>;
       _transactions = list
           .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
+          .where((t) => !isTransactionDeleted(t.id, t.bankRefNo, t.rawText))
           .toList();
     }
 
@@ -309,6 +319,19 @@ class DatabaseService {
   Future<void> _saveUserSettings() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_userSettingsKey, jsonEncode(_userSettings.toJson()));
+  }
+
+  Future<void> _saveDeletedSignatures() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_deletedSignaturesKey, jsonEncode(_deletedSignatures));
+  }
+
+  bool isTransactionDeleted(String id, String bankRefNo, String rawText) {
+    final idTrim = id.trim();
+    final refTrim = bankRefNo.trim();
+    if (idTrim.isNotEmpty && _deletedSignatures.contains(idTrim)) return true;
+    if (refTrim.isNotEmpty && _deletedSignatures.contains(refTrim)) return true;
+    return false;
   }
 
   // ─── Transactions ───────────────────────────────────────────────────────────
@@ -385,6 +408,18 @@ class DatabaseService {
   }
 
   Future<void> addTransaction(Transaction txn) async {
+    if (isTransactionDeleted(txn.id, txn.bankRefNo, txn.rawText)) {
+      return;
+    }
+    // Avoid re-adding identical existing transactions
+    final isDup = _transactions.any(
+      (t) =>
+          (t.id.trim().isNotEmpty && t.id.trim() == txn.id.trim()) ||
+          (txn.bankRefNo.trim().isNotEmpty &&
+              t.bankRefNo.trim() == txn.bankRefNo.trim()),
+    );
+    if (isDup) return;
+
     _transactions.add(txn);
     await _saveTransactions();
   }
@@ -392,31 +427,101 @@ class DatabaseService {
   Future<void> updateTransactionCategory(
     String id,
     String category,
-    String subcategory,
-  ) async {
+    String subcategory, {
+    bool updateAllForMerchant = true,
+  }) async {
     final idx = _transactions.indexWhere((t) => t.id == id);
     if (idx == -1) return;
     final old = _transactions[idx];
-    _transactions[idx] = Transaction(
-      id: old.id,
-      date: old.date,
-      amount: old.amount,
-      type: old.type,
-      paymentMode: old.paymentMode,
-      merchant: old.merchant,
-      category: category,
-      subcategory: subcategory,
-      source: old.source,
-      rawText: old.rawText,
-      accountNo: old.accountNo,
-      bankRefNo: old.bankRefNo,
-      status: old.status,
-      isSubscription: old.isSubscription,
-    );
-    // Save merchant override
+    final targetMerchant = old.merchant.trim().toLowerCase();
+
+    if (updateAllForMerchant && targetMerchant.isNotEmpty && targetMerchant != 'unknown') {
+      for (int i = 0; i < _transactions.length; i++) {
+        final t = _transactions[i];
+        if (t.merchant.trim().toLowerCase() == targetMerchant) {
+          _transactions[i] = Transaction(
+            id: t.id,
+            date: t.date,
+            amount: t.amount,
+            type: t.type,
+            paymentMode: t.paymentMode,
+            merchant: t.merchant,
+            category: category,
+            subcategory: subcategory,
+            source: t.source,
+            rawText: t.rawText,
+            accountNo: t.accountNo,
+            bankRefNo: t.bankRefNo,
+            status: t.status,
+            isSubscription: t.isSubscription,
+          );
+        }
+      }
+    } else {
+      _transactions[idx] = Transaction(
+        id: old.id,
+        date: old.date,
+        amount: old.amount,
+        type: old.type,
+        paymentMode: old.paymentMode,
+        merchant: old.merchant,
+        category: category,
+        subcategory: subcategory,
+        source: old.source,
+        rawText: old.rawText,
+        accountNo: old.accountNo,
+        bankRefNo: old.bankRefNo,
+        status: old.status,
+        isSubscription: old.isSubscription,
+      );
+    }
+
+    // Save sticky merchant override for future transactions
+    if (targetMerchant.isNotEmpty && targetMerchant != 'unknown') {
+      await addMerchantOverride(
+        MerchantOverride(
+          merchantKeyword: targetMerchant,
+          category: category,
+          subcategory: subcategory,
+        ),
+      );
+    }
+    await _saveTransactions();
+  }
+
+  Future<void> updateCategoryForMerchant(
+    String merchant,
+    String category,
+    String subcategory,
+  ) async {
+    final targetMerchant = merchant.trim().toLowerCase();
+    if (targetMerchant.isEmpty || targetMerchant == 'unknown') return;
+
+    for (int i = 0; i < _transactions.length; i++) {
+      final t = _transactions[i];
+      if (t.merchant.trim().toLowerCase() == targetMerchant) {
+        _transactions[i] = Transaction(
+          id: t.id,
+          date: t.date,
+          amount: t.amount,
+          type: t.type,
+          paymentMode: t.paymentMode,
+          merchant: t.merchant,
+          category: category,
+          subcategory: subcategory,
+          source: t.source,
+          rawText: t.rawText,
+          accountNo: t.accountNo,
+          bankRefNo: t.bankRefNo,
+          status: t.status,
+          isSubscription: t.isSubscription,
+        );
+      }
+    }
+
     await addMerchantOverride(
       MerchantOverride(
-        merchantKeyword: old.merchant.toLowerCase(),
+        merchantKeyword: targetMerchant,
         category: category,
         subcategory: subcategory,
       ),
@@ -425,7 +530,36 @@ class DatabaseService {
   }
 
   Future<void> deleteTransaction(String id) async {
-    _transactions.removeWhere((t) => t.id == id);
+    final idTrim = id.trim();
+    final targetIdx = _transactions.indexWhere((t) => t.id.trim() == idTrim);
+    if (targetIdx == -1) return;
+
+    final target = _transactions[targetIdx];
+    final targetMerchant = target.merchant.trim().toLowerCase();
+
+    // Tombstone the deleted ID and bankRefNo so it can never be restored
+    if (idTrim.isNotEmpty && !_deletedSignatures.contains(idTrim)) {
+      _deletedSignatures.add(idTrim);
+    }
+    if (target.bankRefNo.trim().isNotEmpty &&
+        !_deletedSignatures.contains(target.bankRefNo.trim())) {
+      _deletedSignatures.add(target.bankRefNo.trim());
+    }
+
+    _transactions.removeAt(targetIdx);
+
+    // If there are no remaining transactions for this merchant,
+    // clear the sticky category override and memory so future payments prompt again!
+    if (targetMerchant.isNotEmpty && targetMerchant != 'unknown') {
+      final hasRemaining = _transactions.any(
+        (t) => t.merchant.trim().toLowerCase() == targetMerchant,
+      );
+      if (!hasRemaining) {
+        await removeMerchantOverride(targetMerchant);
+      }
+    }
+
+    await _saveDeletedSignatures();
     await _saveTransactions();
   }
 
@@ -494,23 +628,60 @@ class DatabaseService {
   // ─── Merchant Overrides ───────────────────────────────────────────────────────
 
   Future<void> addMerchantOverride(MerchantOverride override) async {
+    final key = override.merchantKeyword.trim().toLowerCase();
+    final normalizedOverride = MerchantOverride(
+      merchantKeyword: key,
+      category: override.category,
+      subcategory: override.subcategory,
+    );
     final idx = _merchantOverrides.indexWhere(
-      (m) => m.merchantKeyword == override.merchantKeyword,
+      (m) => m.merchantKeyword.trim().toLowerCase() == key,
     );
     if (idx >= 0) {
-      _merchantOverrides[idx] = override;
+      _merchantOverrides[idx] = normalizedOverride;
     } else {
-      _merchantOverrides.add(override);
+      _merchantOverrides.add(normalizedOverride);
     }
     await _saveMerchantOverrides();
   }
 
   String? getCategoryOverride(String merchant) {
-    final lower = merchant.toLowerCase();
+    final lower = merchant.trim().toLowerCase();
+    if (lower.isEmpty || lower == 'unknown') return null;
+    // 1. Exact match has highest precedence
     for (final o in _merchantOverrides) {
-      if (lower.contains(o.merchantKeyword)) return o.category;
+      if (lower == o.merchantKeyword.trim().toLowerCase()) return o.category;
+    }
+    // 2. Substring match
+    for (final o in _merchantOverrides) {
+      final key = o.merchantKeyword.trim().toLowerCase();
+      if (key.isNotEmpty && lower.contains(key)) return o.category;
     }
     return null;
+  }
+
+  String? getSubcategoryOverride(String merchant) {
+    final lower = merchant.trim().toLowerCase();
+    if (lower.isEmpty || lower == 'unknown') return null;
+    // 1. Exact match has highest precedence
+    for (final o in _merchantOverrides) {
+      if (lower == o.merchantKeyword.trim().toLowerCase()) return o.subcategory;
+    }
+    // 2. Substring match
+    for (final o in _merchantOverrides) {
+      final key = o.merchantKeyword.trim().toLowerCase();
+      if (key.isNotEmpty && lower.contains(key)) return o.subcategory;
+    }
+    return null;
+  }
+
+  Future<void> removeMerchantOverride(String merchant) async {
+    final lower = merchant.trim().toLowerCase();
+    if (lower.isEmpty || lower == 'unknown') return;
+    _merchantOverrides.removeWhere(
+      (m) => m.merchantKeyword.trim().toLowerCase() == lower,
+    );
+    await _saveMerchantOverrides();
   }
 
   // ─── User Settings ────────────────────────────────────────────────────────────
@@ -662,11 +833,13 @@ class DatabaseService {
     _transactions.clear();
     _budgets.clear();
     _merchantOverrides.clear();
+    _deletedSignatures.clear();
     _userSettings = UserSettings();
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_transactionsKey);
     await prefs.remove(_budgetsKey);
     await prefs.remove(_merchantOverridesKey);
+    await prefs.remove(_deletedSignaturesKey);
     await prefs.remove(_userSettingsKey);
     await prefs.remove(_onboardingDoneKey);
   }

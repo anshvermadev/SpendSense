@@ -19,7 +19,10 @@ class AppRoutes {
   static const String profileScreen = '/profile-screen';
 }
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter appRouter = GoRouter(
+  navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.initial,
   routes: [
     GoRoute(

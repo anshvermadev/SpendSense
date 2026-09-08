@@ -1,3 +1,4 @@
+import 'database_service.dart';
 import 'ml_categorization_service.dart';
 
 class CategorizationService {
@@ -51,6 +52,11 @@ class CategorizationService {
       'vegetables',
       'fruits',
       'kirana',
+      '7-eleven',
+      '7 eleven',
+      '7eleven',
+      '7-11',
+      '7elleven',
     ],
     'Transport': [
       'ola',
@@ -239,6 +245,11 @@ class CategorizationService {
     'railway': 'Train',
     'irctc': 'Train',
     'train': 'Train',
+    '7-eleven': 'Convenience Store',
+    '7 eleven': 'Convenience Store',
+    '7eleven': 'Convenience Store',
+    '7elleven': 'Convenience Store',
+    '7-11': 'Convenience Store',
     'indigo': 'Flight',
     'petrol': 'Fuel',
     'fuel': 'Fuel',
@@ -269,6 +280,13 @@ class CategorizationService {
     final lower = cleaned.toLowerCase();
 
     // 3. Known alias mappings (Tier 1 Normalization)
+    if (lower.contains('7-eleven') ||
+        lower.contains('7 eleven') ||
+        lower.contains('7eleven') ||
+        lower.contains('7elleven') ||
+        lower.contains('7-11')) {
+      return '7-Eleven';
+    }
     if (lower.contains('indian railway') ||
         lower.contains('indian railways') ||
         lower.contains('railway') ||
@@ -306,21 +324,40 @@ class CategorizationService {
     return cleaned.isEmpty ? raw.trim() : cleaned;
   }
 
-  /// 3-Tier Categorization:
+  /// 4-Tier Categorization:
+  /// Tier 0: Sticky User Overrides (User-assigned category & retroactive memory)
   /// Tier 1: Deterministic rules/overrides
   /// Tier 2: On-Device TFLite ML Model
   /// Tier 3: Keyword dictionary fallback
   String categorize(String merchant) {
+    // Tier 0: Sticky User Overrides
+    final db = DatabaseService();
+    final override = db.getCategoryOverride(merchant) ??
+        db.getCategoryOverride(normalizeMerchant(merchant));
+    if (override != null && override.isNotEmpty) {
+      return override;
+    }
+
     final normalized = normalizeMerchant(merchant);
     final lower = normalized.toLowerCase();
 
     // Tier 1: Deterministic High-Priority Overrides
+    if (lower.contains('7-eleven') ||
+        lower.contains('7 eleven') ||
+        lower.contains('7eleven') ||
+        lower.contains('7elleven') ||
+        lower.contains('7-11')) {
+      return 'Groceries';
+    }
     if (lower.contains('railway') ||
         lower.contains('irctc') ||
         lower.contains('train')) {
       return 'Transport';
     }
-    if (lower.contains('dmart')) {
+    if (lower.contains('dmart') ||
+        lower.contains('avenue supermarts') ||
+        lower.contains('avenue su') ||
+        lower.contains('avenue super')) {
       return 'Groceries';
     }
     if (lower.contains('bikaner') || lower.contains('bikanervala')) {
@@ -392,6 +429,14 @@ class CategorizationService {
   }
 
   String getSubcategory(String merchant) {
+    // Tier 0: Sticky User Overrides
+    final db = DatabaseService();
+    final subOverride = db.getSubcategoryOverride(merchant) ??
+        db.getSubcategoryOverride(normalizeMerchant(merchant));
+    if (subOverride != null && subOverride.isNotEmpty) {
+      return subOverride;
+    }
+
     final normalized = normalizeMerchant(merchant);
     final lower = normalized.toLowerCase();
 

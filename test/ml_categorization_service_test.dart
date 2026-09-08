@@ -103,6 +103,21 @@ void main() {
       expect(result['accountNo'], equals('XX888'));
       expect(result['bankRefNo'], equals('091401545786'));
     });
+
+    test('normalizeMerchant, categorize, and getSubcategory handle 7-Eleven variants', () {
+      expect(categorizer.normalizeMerchant('7-Eleven'), equals('7-Eleven'));
+      expect(categorizer.normalizeMerchant('7 eleven'), equals('7-Eleven'));
+      expect(categorizer.normalizeMerchant('7-11'), equals('7-Eleven'));
+      expect(categorizer.normalizeMerchant('7elleven'), equals('7-Eleven'));
+      expect(categorizer.normalizeMerchant('7Eleven Store'), equals('7-Eleven'));
+
+      expect(categorizer.categorize('7-Eleven'), equals('Groceries'));
+      expect(categorizer.categorize('7-11'), equals('Groceries'));
+      expect(categorizer.categorize('7elleven'), equals('Groceries'));
+
+      expect(categorizer.getSubcategory('7-Eleven'), equals('Convenience Store'));
+      expect(categorizer.getSubcategory('7-11'), equals('Convenience Store'));
+    });
   });
 
   group('MlCategorizationService - Tokenizer & Contract', () {

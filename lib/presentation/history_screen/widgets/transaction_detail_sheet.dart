@@ -177,6 +177,39 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
                         setState(() => _selectedCategory = cat);
                         widget.onCategoryChanged(cat, widget.transaction.subcategory);
                         Navigator.of(sheetCtx).pop();
+
+                        final mName = widget.transaction.merchant.trim();
+                        if (mName.isNotEmpty && mName.toLowerCase() != 'unknown') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: AppTheme.textPrimary,
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 3),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle_rounded,
+                                    color: AppTheme.success,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      'Updated all transactions for "$mName" to $cat.',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
                       },
                       borderRadius: BorderRadius.circular(12),
                       child: Padding(
@@ -462,9 +495,12 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       widget.onDelete();
-                      Navigator.pop(context);
+                      await Future.delayed(const Duration(milliseconds: 60));
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.errorColor,

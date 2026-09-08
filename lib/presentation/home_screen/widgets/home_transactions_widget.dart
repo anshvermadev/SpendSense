@@ -9,6 +9,7 @@ import '../../../services/app_state.dart';
 import '../../../services/database_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../history_screen/widgets/transaction_detail_sheet.dart';
+import './uncertain_transaction_modal.dart';
 
 class HomeTransactionsWidget extends StatelessWidget {
   const HomeTransactionsWidget({super.key});
@@ -82,6 +83,7 @@ class HomeTransactionsWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 14),
+              _buildUncertainBanner(context, appState),
               if (transactions.isEmpty)
                 _buildEmptyState()
               else
@@ -157,6 +159,74 @@ class HomeTransactionsWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildUncertainBanner(BuildContext context, AppState appState) {
+    final uncertain = appState.getUncertainTransactions();
+    if (uncertain.isEmpty) return const SizedBox.shrink();
+
+    final count = uncertain.length;
+    final firstTxn = uncertain.first;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F0FF),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.primary.withAlpha(60)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withAlpha(30),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.auto_awesome,
+              color: AppTheme.primary,
+              size: 16,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              count == 1
+                  ? 'New payee "${firstTxn.merchant}" needs category'
+                  : '$count transactions need category',
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          ElevatedButton(
+            onPressed: () => UncertainTransactionModal.show(context, firstTxn),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 0,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              'Assign',
+              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRow(
     BuildContext context,
     Transaction t,
@@ -169,24 +239,36 @@ class HomeTransactionsWidget extends StatelessWidget {
     final color = CategoryConstants.getColor(t.category);
     final dateStr = DateFormat('dd MMM, hh:mm a').format(t.date);
 
+    final catLower = t.category.trim().toLowerCase();
+    final isUncertain = (catLower == 'uncategorised' ||
+            catLower == 'uncategorized' ||
+            catLower == 'unknown' ||
+            catLower.contains('friend') ||
+            catLower.contains('peer')) &&
+        appState.db.getCategoryOverride(t.merchant) == null;
+
     return InkWell(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          useRootNavigator: true,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (_) => TransactionDetailSheet(
-            transaction: t,
-            availableCategories: CategoryConstants.allCategoriesWithUncategorised,
-            onCategoryChanged: (cat, sub) async {
-              await appState.updateTransactionCategory(t.id, cat, sub);
-            },
-            onDelete: () async {
-              await appState.deleteTransaction(t.id);
-            },
-          ),
-        );
+        if (isUncertain) {
+          UncertainTransactionModal.show(context, t);
+        } else {
+          showModalBottomSheet(
+            context: context,
+            useRootNavigator: true,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => TransactionDetailSheet(
+              transaction: t,
+              availableCategories: CategoryConstants.allCategoriesWithUncategorised,
+              onCategoryChanged: (cat, sub) async {
+                await appState.updateTransactionCategory(t.id, cat, sub);
+              },
+              onDelete: () async {
+                await appState.deleteTransaction(t.id);
+              },
+            ),
+          );
+        }
       },
       borderRadius: BorderRadius.vertical(
         top: index == 0 ? const Radius.circular(20) : Radius.zero,
@@ -226,14 +308,45 @@ class HomeTransactionsWidget extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 3),
-                      Text(
-                        '${t.paymentMode} • $dateStr',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppTheme.textSecondary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              '${t.paymentMode} • $dateStr',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppTheme.textSecondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (isUncertain) ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 1.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF3CD),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: const Color(0xFFFFD166),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: const Text(
+                                'Tap to categorize',
+                                style: TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFFB45309),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                   ),

@@ -28,6 +28,13 @@ void backgroundMessageHandler(SmsMessage message) async {
   if (parsed != null && parsed['type'] != 'Unknown') {
     final amount = parsed['amount'] as double;
     if (amount > 0) {
+      final bankRefNo = parsed['bankRefNo'] as String? ?? '';
+      final rawText = message.body!;
+      if (appState.db.isTransactionDeleted('', bankRefNo, rawText)) {
+        debugPrint('SMS transaction was previously deleted by user, ignoring.');
+        return;
+      }
+
       final transaction = Transaction(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         date: DateTime.now(),
@@ -38,9 +45,9 @@ void backgroundMessageHandler(SmsMessage message) async {
         category: parsed['category'] as String? ?? 'Uncategorised',
         subcategory: parsed['subcategory'] as String? ?? '',
         source: 'SMS',
-        rawText: message.body!,
+        rawText: rawText,
         accountNo: parsed['accountNo'] as String? ?? '',
-        bankRefNo: parsed['bankRefNo'] as String? ?? '',
+        bankRefNo: bankRefNo,
       );
 
       await appState.addTransaction(transaction);
