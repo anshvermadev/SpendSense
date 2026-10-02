@@ -42,14 +42,14 @@
 
 \author{\IEEEauthorblockN{Aayush Pandey\textsuperscript{1}, Ansh Verma\textsuperscript{2}, Atharva Achare\textsuperscript{3}}
 \IEEEauthorblockA{\textit{Department of Computer Science \& Engineering} \\
-\textit{Bharati Vidyapeeth Deemed to be University}, Navi Mumbai, India \\
+\textit{Bharati Vidyapeeth (Deemed to be University) Department of Engineering \& Technology}, Navi Mumbai, India \\
 Email: \textsuperscript{1}aayush.pandey-detnm@bvp.edu.in, \textsuperscript{2}ansh.verma-detnm@bvp.edu.in, \textsuperscript{3}atharva.achare-detnm@bvp.edu.in}
 }
 
 \maketitle
 
 \begin{abstract}
-The rapid proliferation of digital payment systems in India, particularly the Unified Payments Interface (UPI), has fragmented individual financial activity across six to eight applications simultaneously, including UPI wallets, credit cards, Buy Now Pay Later platforms, and recurring subscriptions. Empirical studies indicate that approximately 75\% of Indian UPI users report increased overspending attributable to the intangible nature of cashless transactions, yet no existing solution provides a unified, privacy-preserving financial dashboard tailored to India's payment ecosystem. This paper presents SpendSense, a Flutter-based mobile application that addresses this gap by automatically ingesting transaction data from bank and UPI SMS notifications on-device, without requiring account linking, password sharing, or cloud connectivity. The system employs a single multi-task TensorFlow Lite model, trained on a combined corpus of real and synthetically augmented Indian transaction data, to simultaneously predict merchant identity, spending category, subcategory, payment mode, and transaction type from raw SMS text in one forward pass. A masked multi-task loss function enables training across heterogeneous datasets where label availability varies per field. All transaction data is persisted exclusively in a local SQLite database on the user's device, ensuring zero data exposure. Additional features include proactive budget alerts at 80\% category utilization delivered via on-device notifications, automatic recurring-charge detection for forgotten subscriptions, multi-bank account aggregation, and weekly plain-English spending summaries generated from rule-based sentence templates without any external API dependency. SpendSense demonstrates that a fully offline, privacy-first personal finance system can deliver intelligent, India-specific financial insights at zero recurring infrastructure cost.
+The rapid rise of digital payments in India has left many people juggling between UPI apps, credit cards, BNPL, and subscriptions to manage their finances. Empirical studies indicate that approximately 75\% of Indian UPI users report increased overspending attributable to the intangible nature of cashless transactions, yet no existing solution provides a unified, privacy-preserving financial dashboard tailored to India's payment ecosystem. This paper presents SpendSense, a Flutter-based mobile application that addresses this gap by automatically ingesting transaction data from bank and UPI SMS notifications on-device, without requiring account linking, password sharing, or cloud connectivity. The system employs a single multi-task TensorFlow Lite model, trained on a combined corpus of real and synthetically augmented Indian transaction data, to simultaneously predict merchant identity, spending category, subcategory, payment mode, and transaction type from raw SMS text in one forward pass. A masked multi-task loss function enables training across heterogeneous datasets where label availability varies per field. All transaction data is persisted exclusively in a local SQLite database on the user's device, ensuring zero data exposure. Additional features include proactive budget alerts at 80\% category utilization delivered via on-device notifications, automatic recurring-charge detection for forgotten subscriptions, multi-bank account aggregation, and weekly plain-English spending summaries generated from rule-based sentence templates without any external API dependency. SpendSense demonstrates that a fully offline, privacy-first personal finance system can deliver intelligent, India-specific financial insights at zero recurring infrastructure cost.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -57,7 +57,7 @@ Personal Finance Management, UPI, Transaction Categorisation, Multi-Task Learnin
 \end{IEEEkeywords}
 
 \section{Introduction}
-In the last ten years the global financial environment has seen a rapid shift towards digital methods of payment. In emerging digital economies, and specifically in India, the widespread use of the Unified Payments Interface (UPI) has created an environment in which retail micropayments take place almost instantly with very little difficulty. Statistics released by the National Payments Corporation of India (NPCI) show that the number of digital transactions has gone beyond tens of billions of monthly settlements, with physical banknotes now being replaced as the main means of daily consumer exchange.
+In the last ten years the global financial environment has seen a rapid shift towards digital methods of payment. In emerging digital economies, and specifically in India, the widespread use of the UPI has created an environment in which retail micropayments take place almost instantly with very little difficulty. Statistics released by the NPCI show that the number of digital transactions has gone beyond tens of billions of monthly settlements, with physical banknotes now being replaced as the main means of daily consumer exchange.
 
 Nevertheless, the frictionless way of settling transactions brings about serious problems relating to behaviour. In the field of classical consumer psychology, the physical resistance involved in handing over cash acts as a natural mental barrier against making impulsive purchases. On the other hand, digital micropayments separate the act of consuming from the sense of depleting one's funds. Studies in this area, for example the empirical research carried out by Dev et al. \cite{dev2024}, show that about three-quarters of the actively using digital payment users interviewed admit to making unplanned spending which can be directly linked to the intangible character of digital wallets, credit limits, and Buy Now Pay Later (BNPL) services \cite{gerrans2021}.
 
@@ -65,7 +65,7 @@ This psychological difficulty is worsened by the way personal finance is organis
 
 Existing commercial Personal Finance Management (PFM) solutions fail to resolve this crisis due to architectural compromises \cite{pew2022}. Mainstream platforms frequently rely on cloud-centralized account scraping, demanding sensitive bank credentials, session cookies, or continuous cloud synchronization of private transaction metadata. Recent third-party PFM utilities have been shown to transmit merchant identities, balances, and geographic coordinates to remote servers, exposing consumers to severe privacy vulnerabilities. Furthermore, legacy platforms are predominantly descriptive; they summarize historical expenses at monthly billing cycles rather than offering real-time, proactive risk deterrence \cite{compen2022}.
 
-In order to overcome these structural limitations, this paper presents \textbf{SpendSense}, an entirely autonomous, offline-first personal financial analysis platform that has been implemented using Flutter. SpendSense introduces a new on-device operating framework which combines deterministic SMS parsing, local relational data storage, proactive budget exhaustion modelling, and an on-device multi-task deep neural network compiled into TensorFlow Lite. The main contributions of this study are as follows:
+In order to address these structural limitations, this paper introduces \textbf{SpendSense}, an entirely autonomous, offline-first personal financial analysis platform that has been implemented using Flutter. SpendSense introduces a new on-device operating framework which combines deterministic SMS parsing, local relational data storage, proactive budget exhaustion modelling, and an on-device multi-task deep neural network compiled into TensorFlow Lite. The main contributions points of this review are as follows:
 \begin{enumerate}
     \item \textbf{Privacy-Preserving On-Device Ingestion:} An automated data pipeline with no use of the cloud which intercepts and interprets transactional SMS notifications locally based on recognised banking headers, thus entirely removing any exposure of third-party credentials.
     \item \textbf{Unified Multi-Task Classification Engine:} A Multi-Task Learning (MTL) architecture that is deployed on the device and is able to predict the merchant identity, the canonical expense category, the fine-grained subcategory, the transaction mechanism, and the debit/credit orientation all in one forward pass with a latency of less than one millisecond.
@@ -89,22 +89,7 @@ The task of automatically mapping raw financial strings is a particularly diffic
 \caption{Comparison of Existing Financial Applications with SpendSense}
 \label{tab:comparison_apps}
 \centering
-\renewcommand{\arraystretch}{1.15}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Feature / Capability} & \textbf{Walnut / axio} & \textbf{Money View} & \textbf{Mint / YNAB} & \textbf{SpendSense (Ours)} \\
-\midrule
-Data Ingestion Vector & Bank SMS & Bank SMS & Bank API / Plaid & On-Device SMS + CSV \\
-Data Storage \& Privacy & Cloud Server & Cloud Server & Cloud Server & \textbf{100\% Local SQLite} \\
-Categorization Engine & Cloud Server & Rule / Cloud & Cloud NLP & \textbf{On-Device TFLite MTL} \\
-Indian UPI VPA Support & Partial & Partial & None (Western) & \textbf{Native Regex + MTL} \\
-Proactive Budget Alerts & Post-hoc & Basic & Static Limit & \textbf{80\% Predictive Guard} \\
-Subscription Detection & None & None & Limited & \textbf{Temporal Recurrence} \\
-Cloud Telemetry \& Ads & High (Lending) & High (Ads) & Subscription Fee & \textbf{Zero (Privacy-First)} \\
-\bottomrule
-\end{tabular}%
-}
+\raisebox{-30.14493pt}[32.81412pt][30.14493pt]{\makebox[254.80225pt][c]{\includegraphics[width=254.80225pt,height=62.95905pt,keepaspectratio]{ieee_images/tab_comparison_apps.png}}}
 \end{table}
 
 \section{Methodology}
@@ -127,26 +112,7 @@ The system is organized according to an efficient, modular, and microservices-li
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[node distance=0.85cm, auto, >=stealth]
-\tikzstyle{block} = [rectangle, draw, fill=blue!10, text width=2.2cm, text centered, rounded corners, minimum height=0.75cm, font=\scriptsize]
-\tikzstyle{engine} = [rectangle, draw, fill=orange!15, text width=2.2cm, text centered, rounded corners, minimum height=0.75cm, font=\scriptsize]
-\tikzstyle{store} = [cylinder, draw, shape border rotate=90, aspect=0.25, fill=gray!20, text width=1.6cm, text centered, minimum height=0.75cm, font=\scriptsize]
-\tikzstyle{line} = [draw, -latex', thick]
-
-\node [block] (sms) {Bank SMS Receipt};
-\node [block, right=0.7cm of sms] (filter) {Regex Normalizer};
-\node [engine, below=0.65cm of filter] (tflite) {TFLite Multi-Task};
-\node [store, left=0.7cm of tflite] (db) {Local SQLite DB};
-\node [engine, below=0.65cm of tflite] (guard) {80\% Budget Guard};
-\node [block, left=0.7cm of guard] (nlg) {Template NLG};
-
-\path [line] (sms) -- (filter);
-\path [line] (filter) -- node[right, font=\tiny] {Tokens} (tflite);
-\path [line] (tflite) -- node[above, font=\tiny] {Labels} (db);
-\path [line] (tflite) -- (guard);
-\path [line] (db) -- (guard);
-\path [line] (guard) -- (nlg);
-\end{tikzpicture}
+\includegraphics[width=191.08876pt,height=122.64818pt,keepaspectratio]{ieee_images/fig_pipeline_architecture.png}
 \caption{End-to-end local data ingestion, multi-task classification, and proactive budget notification pipeline of the SpendSense architecture.}
 \label{fig:pipeline_architecture}
 \end{figure}
@@ -160,20 +126,7 @@ The corpus consists of 107,455 instances involving 734 unique merchants and 15 s
 \caption{SpendSense Transaction Dataset Composition and Partition}
 \label{tab:dataset_desc}
 \centering
-\renewcommand{\arraystretch}{1.15}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccc}
-\toprule
-\textbf{Dataset Partition} & \textbf{Sample Count} & \textbf{Unique Merchants} & \textbf{Semantic Categories} \\
-\midrule
-Training Partition (80\%) & 85,925 & 734 & 15 Canonical Classes \\
-Validation Partition (10\%) & 10,765 & 734 & 15 Canonical Classes \\
-Testing Partition (10\%) & 10,765 & 734 & 15 Canonical Classes \\
-\midrule
-\textbf{Total Augmented Corpus} & \textbf{107,455} & \textbf{734} & \textbf{15 Canonical Classes} \\
-\bottomrule
-\end{tabular}%
-}
+\raisebox{-25.11182pt}[28.22530pt][25.11182pt]{\makebox[254.80202pt][c]{\includegraphics[width=254.80202pt,height=53.33712pt,keepaspectratio]{ieee_images/tab_dataset_desc.png}}}
 \end{table}
 
 The data was standardized to include tuples of Credit/Debit, numerical amount of the transaction, spending category, timestamp, and encrypted user tokens.
@@ -188,46 +141,12 @@ There are six engineered features, described in Table~\ref{tab:engineered_featur
 \caption{Engineered Behavioral Features and Domain Semantics}
 \label{tab:engineered_features}
 \centering
-\renewcommand{\arraystretch}{1.15}
-\begin{tabular}{lp{5.4cm}}
-\toprule
-\textbf{Feature Name} & \textbf{Operational Definition} \\
-\midrule
-\texttt{spend\_ratio} & Ratio of total monthly spends to overall credit \\
-\texttt{savings\_ratio} & Ratio of unutilized liquidity to revenues \\
-\texttt{Entertainment\_ratio} & Percentage of discretionary spending \\
-\texttt{Weekend\_binge} & Spend concentration metric for weekends \\
-\texttt{Pending\_debt\_count} & Count of outstanding recurring payments \\
-\bottomrule
-\end{tabular}
+\raisebox{-34.82474pt}[38.82474pt][34.82474pt]{\makebox[271.64482pt][c]{\includegraphics[width=271.64482pt,height=73.64948pt,keepaspectratio]{ieee_images/tab_engineered_features.png}}}
 \end{table}
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=0.68, font=\scriptsize]
-\foreach \x / \y / \c / \v in {
-  0/4/1.00/1.00, 1/4/-0.47/-0.47, 2/4/0.69/0.69, 3/4/-0.41/-0.41, 4/4/0.29/0.29,
-  0/3/-0.47/-0.47, 1/3/1.00/1.00, 2/3/-0.29/-0.29, 3/3/-0.41/-0.41, 4/3/-0.28/-0.28,
-  0/2/0.69/0.69, 1/2/-0.29/-0.29, 2/2/1.00/1.00, 3/2/0.34/0.34, 4/2/0.42/0.42,
-  0/1/-0.41/-0.41, 1/1/-0.41/-0.41, 2/1/0.34/0.34, 3/1/1.00/1.00, 4/1/0.10/0.10,
-  0/0/0.29/0.29, 1/0/-0.28/-0.28, 2/0/0.42/0.42, 3/0/0.10/0.10, 4/0/1.00/1.00
-}{
-  \pgfmathtruncatemacro\colval{round((\c+0.5)*50)}
-  \fill[blue!\colval!red!50!white] (\x*1.1, \y*0.8) rectangle ++(1.0, 0.7);
-  \node at (\x*1.1+0.5, \y*0.8+0.35) {\tiny \v};
-}
-\node[rotate=45, anchor=north east] at (0.5, 0) {\tiny spend\_ratio};
-\node[rotate=45, anchor=north east] at (1.6, 0) {\tiny savings\_ratio};
-\node[rotate=45, anchor=north east] at (2.7, 0) {\tiny weekend\_binge};
-\node[rotate=45, anchor=north east] at (3.8, 0) {\tiny debt\_count};
-\node[rotate=45, anchor=north east] at (4.9, 0) {\tiny entertain};
-
-\node[anchor=east] at (-0.1, 3.55) {\tiny spend\_ratio};
-\node[anchor=east] at (-0.1, 2.75) {\tiny savings\_ratio};
-\node[anchor=east] at (-0.1, 1.95) {\tiny weekend\_binge};
-\node[anchor=east] at (-0.1, 1.15) {\tiny debt\_count};
-\node[anchor=east] at (-0.1, 0.35) {\tiny entertain};
-\end{tikzpicture}
+\includegraphics[width=161.96145pt,height=123.75559pt,keepaspectratio]{ieee_images/fig_correlation_matrix.png}
 \caption{Correlation Matrix of Engineered Financial Features.}
 \label{fig:correlation_matrix}
 \end{figure}
@@ -236,30 +155,7 @@ These engineered signals capture holistic financial patterns beyond raw debit to
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    xbar,
-    width=6.0cm,
-    height=4.2cm,
-    xlabel={\small Relative Feature Importance (\%)},
-    symbolic y coords={spend\_ratio, balance, savings\_ratio, pending\_debt, entertainment},
-    ytick=data,
-    nodes near coords={\pgfmathprintnumber\pgfplotspointmeta\%},
-    nodes near coords align={horizontal},
-    nodes near coords style={font=\tiny},
-    xmin=0, xmax=45,
-    bar width=7pt,
-    yticklabel style={font=\tiny}
-]
-\addplot[fill=blue!65!cyan] coordinates {
-    (23.6,spend\_ratio)
-    (25.5,balance)
-    (29.3,savings\_ratio)
-    (35.1,pending\_debt)
-    (36.2,entertainment)
-};
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=188.95204pt,height=115.32116pt,keepaspectratio]{ieee_images/fig_feature_importance.png}
 \caption{Feature Importance Analysis using Tree-Based Models.}
 \label{fig:feature_importance}
 \end{figure}
@@ -284,7 +180,7 @@ where $m_k \in \{0, 1\}$ indicates a binary masking indicator that specifies whe
 
 \subsection{Performance Evaluation Metrics}
 
-The performance of the model is evaluated based on diagnostic accuracy scores such as Accuracy, Precision, Recall, and the harmonic $F_1$ Score \cite{fawcett2006}:
+The performance of the model can be assessed based on diagnostic accuracy scores such as Accuracy, Precision, Recall, and the harmonic $F_1$ Score \cite{fawcett2006}:
 \begin{equation}
 \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
 \end{equation}
@@ -323,29 +219,7 @@ The Overspending Risk Model is evaluated on an augmented validation partition co
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=0.85, font=\footnotesize]
-\node[draw, fill=green!35, minimum size=1.05cm] at (0, 1.9) {85};
-\node[draw, fill=orange!20, minimum size=1.05cm] at (1.1, 1.9) {4};
-\node[draw, fill=red!10, minimum size=1.05cm] at (2.2, 1.9) {0};
-
-\node[draw, fill=orange!25, minimum size=1.05cm] at (0, 0.85) {10};
-\node[draw, fill=orange!45, minimum size=1.05cm] at (1.1, 0.85) {54};
-\node[draw, fill=red!10, minimum size=1.05cm] at (2.2, 0.85) {0};
-
-\node[draw, fill=green!10, minimum size=1.05cm] at (0, -0.2) {0};
-\node[draw, fill=orange!15, minimum size=1.05cm] at (1.1, -0.2) {1};
-\node[draw, fill=red!45, minimum size=1.05cm] at (2.2, -0.2) {326};
-
-\node[above=0.25cm] at (1.1, 2.4) {\small\bfseries Predicted Class};
-\node[above] at (0, 2.4) {\tiny Low};
-\node[above] at (1.1, 2.4) {\tiny Med};
-\node[above] at (2.2, 2.4) {\tiny High};
-
-\node[left] at (-0.6, 1.9) {\tiny Low};
-\node[left] at (-0.6, 0.85) {\tiny Med};
-\node[left] at (-0.6, -0.2) {\tiny High};
-\node[rotate=90] at (-1.2, 0.85) {\small\bfseries Actual Class};
-\end{tikzpicture}
+\includegraphics[width=116.34925pt,height=110.16882pt,keepaspectratio]{ieee_images/fig_cm_stress.png}
 \caption{Confusion Matrix for Overspending Risk Prediction.}
 \label{fig:cm_stress}
 \end{figure}
@@ -393,26 +267,7 @@ F_1 = \frac{2 \times 0.9365 \times 0.9320}{0.9365 + 0.9320} = \frac{2 \times 0.8
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=6.8cm,
-    height=4.3cm,
-    xlabel={\small Recall},
-    ylabel={\small Precision},
-    xmin=0, xmax=1.0,
-    ymin=0, ymax=1.05,
-    grid=both,
-    grid style={line width=.1pt, draw=gray!30},
-    legend pos=south west,
-    legend style={font=\tiny}
-]
-\addplot[smooth, thick, blue] coordinates {
-    (0.0, 0.98) (0.2, 0.97) (0.4, 0.96) (0.6, 0.95) (0.8, 0.93) (0.932, 0.9365) (0.98, 0.70) (1.0, 0.0)
-};
-\addlegendentry{Risk Predictor Trajectory}
-\node[pin=120:{\tiny Tangent ($F_1=0.933$)}] at (axis cs:0.932,0.9365) {};
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=209.51020pt,height=119.43249pt,keepaspectratio]{ieee_images/fig_pr_stress.png}
 \caption{Precision-Recall Curve for the Overspending Risk Prediction Model.}
 \label{fig:pr_stress}
 \end{figure}
@@ -424,30 +279,8 @@ The obtained precision-recall curve is presented in Fig.~\ref{fig:pr_stress}, de
 The second behavioral model is designed to predict whether a person is at an imminent risk of exhausting their budget before the pay cycle.
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=0.85, font=\footnotesize]
-\node[draw, fill=green!25, minimum size=1.05cm] at (0, 1.9) {2};
-\node[draw, fill=orange!20, minimum size=1.05cm] at (1.1, 1.9) {9};
-\node[draw, fill=red!10, minimum size=1.05cm] at (2.2, 1.9) {0};
-
-\node[draw, fill=green!10, minimum size=1.05cm] at (0, 0.85) {0};
-\node[draw, fill=orange!55, minimum size=1.05cm] at (1.1, 0.85) {376};
-\node[draw, fill=red!20, minimum size=1.05cm] at (2.2, 0.85) {6};
-
-\node[draw, fill=green!10, minimum size=1.05cm] at (0, -0.2) {0};
-\node[draw, fill=orange!25, minimum size=1.05cm] at (1.1, -0.2) {11};
-\node[draw, fill=red!45, minimum size=1.05cm] at (2.2, -0.2) {76};
-
-\node[above=0.25cm] at (1.1, 2.4) {\small\bfseries Predicted Class};
-\node[above] at (0, 2.4) {\tiny Low};
-\node[above] at (1.1, 2.4) {\tiny Med};
-\node[above] at (2.2, 2.4) {\tiny High};
-
-\node[left] at (-0.6, 1.9) {\tiny Low};
-\node[left] at (-0.6, 0.85) {\tiny Med};
-\node[left] at (-0.6, -0.2) {\tiny High};
-\node[rotate=90] at (-1.2, 0.85) {\small\bfseries Actual Class};
-\end{tikzpicture}
-\caption{Confusion Matrix for Budget Exhaustion Risk Prediction.}
+\includegraphics[width=116.34925pt,height=110.16882pt,keepaspectratio]{ieee_images/fig_cm_burnout.png}
+\caption{Budget Exhaustion Risk Confusion Matrix.}
 \label{fig:cm_burnout}
 \end{figure}
 
@@ -494,25 +327,7 @@ F_1 = \frac{2 \times 0.958 \times 0.679}{0.958 + 0.679} = \frac{2 \times 0.6505}
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=6.8cm,
-    height=4.3cm,
-    xlabel={\small Recall},
-    ylabel={\small Precision},
-    xmin=0, xmax=1.0,
-    ymin=0, ymax=1.05,
-    grid=both,
-    grid style={line width=.1pt, draw=gray!30},
-    legend pos=south west,
-    legend style={font=\tiny}
-]
-\addplot[smooth, thick, red!80!black] coordinates {
-    (0.0, 1.0) (0.2, 0.96) (0.4, 0.92) (0.6, 0.88) (0.8, 0.78) (0.98, 0.50) (1.0, 0.35)
-};
-\addlegendentry{Exhaustion Model (Area = 0.71)}
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=209.51020pt,height=119.43249pt,keepaspectratio]{ieee_images/fig_pr_burnout.png}
 \caption{Precision-Recall Curve for the Budget Exhaustion Model.}
 \label{fig:pr_burnout}
 \end{figure}
@@ -521,33 +336,7 @@ Figure ~\ref{fig:pr_burnout} demonstrates the Precision-Recall characteristic of
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    width=6.8cm,
-    height=4.4cm,
-    bar width=6pt,
-    ymin=60, ymax=102,
-    ylabel={\small Percentage (\%)},
-    symbolic x coords={Accuracy, Precision, Recall, F1-Score},
-    xtick=data,
-    nodes near coords,
-    nodes near coords align={vertical},
-    nodes near coords style={font=\tiny},
-    legend pos=south west,
-    legend style={font=\tiny}
-]
-\addplot[fill=blue!70!cyan] coordinates {
-    (Accuracy, 96.88) (Precision, 93.65) (Recall, 93.20) (F1-Score, 93.30)
-};
-\addlegendentry{Overspending Risk Predictor}
-
-\addplot[fill=orange!80!red] coordinates {
-    (Accuracy, 94.58) (Precision, 95.80) (Recall, 67.90) (F1-Score, 79.40)
-};
-\addlegendentry{Exhaustion Model}
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=217.93931pt,height=117.08306pt,keepaspectratio]{ieee_images/fig_model_comparison.png}
 \caption{Comparison of Model Performance Metrics.}
 \label{fig:model_comparison}
 \end{figure}
@@ -559,18 +348,7 @@ In order to verify that SpendSense can execute on mobile devices without signifi
 \caption{On-Device TFLite Model Execution Benchmarks on ARM64}
 \label{tab:tflite_benchmarks}
 \centering
-\renewcommand{\arraystretch}{1.15}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Precision Format} & \textbf{Model Size} & \textbf{Latency} & \textbf{Throughput} & \textbf{Cat. Acc.} \\
-\midrule
-Float32 (Unquantized) & 1.04 MB & 0.89 ms & 1125 FPS & 96.76\% \\
-Dynamic Range Quant. & 0.38 MB & 0.62 ms & 1612 FPS & 96.41\% \\
-INT8 Fully Quantized & 0.29 MB & 0.47 ms & 2127 FPS & 95.89\% \\
-\bottomrule
-\end{tabular}%
-}
+\raisebox{-22.26692pt}[25.90608pt][22.26692pt]{\makebox[254.80319pt][c]{\includegraphics[width=254.80319pt,height=48.17300pt,keepaspectratio]{ieee_images/tab_tflite_benchmarks.png}}}
 \end{table}
 
 The Float32 model has less than a millisecond latency (0.89 ms) and maintains category classification accuracy above 96.7\%, while the merchant identification task reaches 99.86\% accuracy for the 15 standard spending categories.

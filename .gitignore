@@ -102,6 +102,8 @@ black_book/
 # Research paper assets
 paper assets/
 
+/ieee_images/source/
+
 # University logos & logo generation scripts
 /*logo*
 *bvdu*
