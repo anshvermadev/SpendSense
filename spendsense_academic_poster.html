@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendSense: On-Device Deep Learning for Financial Telemetry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&family=Outfit:wght@600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       PUBLICATION-GRADE IEEE/ACM ACADEMIC POSTER - ZERO OVERFLOW
+       Canvas: Exactly 2000px x 1049px (Landscape, Zero Scrollbars)
+       Typography: 
+         - Space Grotesk: Section titles, numbers, badges, KPI callouts
+         - Inter: Academic body text, tables, descriptions, citations
+         - JetBrains Mono: Mathematical formulas, technical specs, tensors
+         - Outfit: Main banner title & conference header
+       Palette: Deep Indigo (#1E1B4B), Dark Slate (#0F172A), Primary Indigo (#4338CA), 
+                Royal Violet (#6D28D9), Amber Gold (#D97706), Card White (#FFFFFF)
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-dark: #090D1A;
+      --navy-dark: #0F172A;
+      --deep-indigo: #1E1B4B;
+      --brand-indigo: #312E81;
+      --primary-indigo: #4338CA;
+      --accent-indigo: #4F46E5;
+      --violet-lead: #581C87;
+      --violet-accent: #6D28D9;
+      --light-violet: #7C3AED;
+      --body-bg: #EEF2F6;
+      --card-white: #FFFFFF;
+      --text-main: #0F172A;
+      --text-body: #1E293B;
+      --text-muted: #475569;
+      --border-academic: #CBD5E1;
+      --border-subtle: #E2E8F0;
+      --border-dark: #94A3B8;
+      --table-header-bg: #F1F5F9;
+      --gold-accent: #D97706;
+      --gold-light: #FEF3C7;
+      --alert-red: #B91C1C;
+      --emerald-green: #059669;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #030712;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Fixed Canvas: Strictly 2000px x 1049px */
+    .poster {
+      width: 2000px;
+      height: 1049px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--body-bg);
+      display: flex;
+      flex-direction: column;
+      padding: 10px 18px;
+      gap: 9px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+    }
+
+    /* Fine Technical Grid Pattern */
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       INSTITUTIONAL HEADER (Height: 118px - Zero Overflow)
+       ============================================================ */
+    #poster-header {
+      position: relative;
+      z-index: 10;
+      height: 118px;
+      background: linear-gradient(135deg, #070B14 0%, #0F172A 30%, #1E1B4B 70%, #2B1D56 100%);
+      border-radius: 8px;
+      padding: 6px 20px;
+      display: grid;
+      grid-template-columns: 330px 1fr 380px;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      flex-shrink: 0;
+    }
+
+    #poster-header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #D97706 0%, #4338CA 35%, #7C3AED 70%, #D97706 100%);
+    }
+
+    /* Left: Institutional Crest */
+    .header-institution {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 5px;
+      border-right: 1px solid rgba(255, 255, 255, 0.14);
+      padding-right: 14px;
+      height: 100%;
+    }
+
+    .bvdu-logo {
+      height: 58px;
+      width: auto;
+      max-width: 320px;
+      object-fit: contain;
+      background: transparent;
+    }
+
+    .inst-dept {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      color: #E2E8F0;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    /* Center: Title Block */
+    .header-center {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .conference-callout {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: #C4B5FD;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .conference-callout::before, .conference-callout::after {
+      content: "";
+      width: 16px;
+      height: 1px;
+      background: #8B5CF6;
+      display: inline-block;
+    }
+
+    .header-paper-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.2px;
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    .header-paper-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #E2E8F0;
+      margin-top: 2px;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    /* Right: Author & Faculty Guides */
+    .header-authors {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+      padding-left: 16px;
+      height: 100%;
+    }
+
+    .authors-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.2px;
+      font-weight: 700;
+      color: #FDE68A;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .authors-names {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.8px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+
+    .authors-affil {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.8px;
+      color: #CBD5E1;
+      line-height: 1.2;
+    }
+
+    .authors-guidance {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.2px;
+      font-weight: 500;
+      color: #E0E7FF;
+      margin-top: 1px;
+      line-height: 1.25;
+      padding-top: 2px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .authors-guidance strong {
+      color: #FDE68A;
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       POSTER MAIN BODY - TWO BALANCED ROWS
+       Row 1: 443px | Row 2: 449px | Exactly 1049px Total
+       ============================================================ */
+    .poster-body {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .poster-row {
+      display: flex;
+      gap: 11px;
+    }
+
+    #row-1 {
+      height: 443px;
+      flex-shrink: 0;
+    }
+
+    #row-2 {
+      height: 449px;
+      flex-shrink: 0;
+    }
+
+    /* Publication Card Base */
+    .card {
+      background: var(--card-white);
+      border: 1px solid var(--border-academic);
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Modern Technical Section Header */
+    .section-header {
+      padding: 6px 13px;
+      background: #F8FAFC;
+      border-bottom: 1.5px solid var(--border-academic);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .section-header::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--brand-indigo);
+    }
+
+    .section-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .section-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-indigo);
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14.8px;
+      font-weight: 700;
+      color: var(--deep-indigo);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .section-field {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .card-content {
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      overflow: hidden;
+      gap: 4px;
+    }
+
+    /* Academic Typography: High Legibility & High Contrast */
+    p.academic-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      line-height: 1.44;
+      color: var(--text-body);
+      text-align: justify;
+    }
+
+    p.academic-text strong {
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       COLUMN SIZING (Total Available Width: 1960px)
+       Row 1: 435 + 465 + 455 + 572 = 1927px (+ 33px gaps = 1960px)
+       Row 2: 430 + 675 + 422 + 400 = 1927px (+ 33px gaps = 1960px)
+       ============================================================ */
+    .col-abstract { width: 435px; }
+    .col-intro { width: 465px; }
+    .col-objectives { width: 455px; }
+    .col-arch { width: 572px; }
+
+    .col-methodology { width: 430px; }
+    .col-results { width: 675px; }
+    .col-conclusion { width: 422px; }
+    .col-references { width: 400px; }
+
+    /* ROW 1 - COL 1: ABSTRACT */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 5px 9px;
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .spec-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.2px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .spec-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12.8px;
+      font-weight: 700;
+      color: var(--brand-indigo);
+    }
+
+    .abstract-keywords {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.8px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 4px;
+    }
+
+    .abstract-keywords strong {
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--deep-indigo);
+      font-weight: 700;
+    }
+
+    /* ROW 1 - COL 2: PROBLEM & PRIOR ART - ZERO OVERFLOW */
+    .academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.2px;
+      margin: 2px 0;
+      table-layout: fixed;
+      border-top: 1.5px solid var(--border-dark);
+      border-bottom: 1.5px solid var(--border-dark);
+    }
+
+    .academic-table th, .academic-table td {
+      padding: 3px 5px;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
+    }
+
+    .academic-table th {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.25px;
+      color: var(--navy-dark);
+      border-bottom: 1.2px solid var(--border-dark);
+      background: var(--table-header-bg);
+    }
+
+    .academic-table td {
+      font-family: 'Inter', sans-serif;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-body);
+      line-height: 1.25;
+      font-weight: 500;
+    }
+
+    .academic-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .academic-table tr.highlight-row {
+      background: #F5F3FF;
+      font-weight: 600;
+    }
+
+    .academic-table tr.highlight-row td {
+      color: var(--brand-indigo);
+    }
+
+    .table-caption {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10.2px;
+      font-weight: 700;
+      color: var(--deep-indigo);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 1px;
+    }
+
+    .problem-highlight-box {
+      background: #FFFBEB;
+      border-left: 3.5px solid var(--gold-accent);
+      padding: 4px 8px;
+      font-size: 11px;
+      color: #92400E;
+      line-height: 1.32;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* ROW 1 - COL 3: OBJECTIVES & FORMULATION - COMPACT & COMPLETE */
+    .objectives-unified-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-left: 3.5px solid var(--primary-indigo);
+      border-radius: 4px;
+      padding: 4px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+    }
+
+    .obj-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5px;
+    }
+
+    .obj-header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .obj-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.2px;
+      font-weight: 700;
+      color: var(--deep-indigo);
+    }
+
+    .obj-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--primary-indigo);
+    }
+
+    .obj-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      color: var(--text-body);
+      line-height: 1.22;
+    }
+
+    .specs-table-compact {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.2px;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 1px 0;
+      border-top: 1px solid var(--border-academic);
+      border-bottom: 1px solid var(--border-academic);
+    }
+
+    .specs-table-compact th, .specs-table-compact td {
+      padding: 2px 5px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .specs-table-compact th {
+      background: #F1F5F9;
+      color: var(--navy-dark);
+      font-weight: 700;
+    }
+
+    .math-panel {
+      background: #F8FAFC;
+      border: 1px solid var(--border-academic);
+      border-radius: 4px;
+      padding: 4px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .math-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-indigo);
+      text-align: center;
+      padding: 1px 0;
+      white-space: nowrap;
+    }
+
+    .math-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    /* ROW 1 - COL 4: SYSTEM ARCHITECTURE SCHEMATIC */
+    .diagram-card-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border-academic);
+      border-radius: 5px;
+      padding: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .figure-caption {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 1px;
+    }
+
+    .figure-caption strong {
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--deep-indigo);
+      font-weight: 700;
+    }
+
+    /* ROW 2 - COL 1: METHODOLOGY & FEATURES - STACKED ONE-BELOW-ONE */
+    .pipeline-vertical-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5px;
+    }
+
+    .pipeline-step-row {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 3px 7px;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .step-badge {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      background: var(--deep-indigo);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5px;
+      overflow: hidden;
+    }
+
+    .step-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-dark);
+    }
+
+    .step-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 600;
+      color: var(--primary-indigo);
+      background: #EDE9FE;
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+
+    .step-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: var(--text-body);
+      line-height: 1.25;
+    }
+
+    /* Dual-Column Behavioral Feature Grid (100% Visible) */
+    .features-grid-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .feature-bar-unit {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px;
+    }
+
+    .feature-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+    }
+
+    .feature-bar-track {
+      width: 100%;
+      height: 4.5px;
+      background: #E2E8F0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .feature-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    /* ROW 2 - COL 2: RESULTS & BENCHMARKS */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 254px 1fr;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .results-panel-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
+    .results-panel-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .sub-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border-academic);
+      border-radius: 4px;
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sub-box-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--deep-indigo);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .confusion-highlight-box {
+      background: #F5F3FF;
+      border: 1px solid #DDD6FE;
+      border-left: 3.5px solid var(--brand-indigo);
+      border-radius: 4px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .confusion-highlight-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.8px;
+      font-weight: 700;
+      color: var(--deep-indigo);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .confusion-highlight-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.2px;
+      color: var(--text-body);
+      line-height: 1.32;
+    }
+
+    .confusion-highlight-desc strong {
+      color: var(--deep-indigo);
+      font-weight: 700;
+    }
+
+    /* Table IV: TFLite Benchmarks - Fixed Layout, Zero Truncation */
+    .benchmark-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 1px 0;
+      table-layout: fixed;
+      border-top: 1.5px solid var(--border-dark);
+      border-bottom: 1.5px solid var(--border-dark);
+    }
+
+    .benchmark-table th, .benchmark-table td {
+      padding: 4px 5px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .benchmark-table th:first-child, .benchmark-table td:first-child {
+      text-align: left;
+    }
+
+    .benchmark-table th {
+      background: var(--table-header-bg);
+      color: var(--navy-dark);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 9.8px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .benchmark-table td {
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-body);
+    }
+
+    .benchmark-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .benchmark-table tr.highlight-row {
+      background: #F5F3FF;
+      font-weight: 700;
+    }
+
+    .benchmark-table tr.highlight-row td {
+      color: var(--brand-indigo);
+    }
+
+    /* Table V: Fixed Layout to prevent column truncation */
+    .diagnostic-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 1px 0;
+      table-layout: fixed;
+      border-top: 1px solid var(--border-academic);
+      border-bottom: 1px solid var(--border-academic);
+    }
+
+    .diagnostic-table th, .diagnostic-table td {
+      padding: 4px 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .diagnostic-table th:first-child, .diagnostic-table td:first-child {
+      text-align: left;
+    }
+
+    .diagnostic-table th {
+      background: #F1F5F9;
+      color: var(--navy-dark);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 9.8px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      border-bottom: 1px solid var(--border-academic);
+    }
+
+    .diagnostic-table td {
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-body);
+    }
+
+    .diagnostic-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .diagnostic-table tr.highlight-row {
+      background: #F5F3FF;
+      font-weight: 700;
+    }
+
+    .diagnostic-table tr.highlight-row td {
+      color: var(--brand-indigo);
+    }
+
+    /* KPI Callouts - Full Width Executive Bar */
+    .kpi-deck {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+      margin-top: 3px;
+    }
+
+    .kpi-tile {
+      background: #FFFFFF;
+      border: 1px solid var(--border-academic);
+      border-radius: 4px;
+      padding: 3.5px 5px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .kpi-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--brand-indigo);
+      line-height: 1.1;
+    }
+
+    .kpi-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8.2px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 1.5px;
+    }
+
+    /* ROW 2 - COL 3: CONCLUSION & IMPACT */
+    .findings-card {
+      background: #FAF5FF;
+      border: 1px solid #DDD6FE;
+      border-left: 3.5px solid var(--violet-accent);
+      border-radius: 4px;
+      padding: 4px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .findings-header {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--violet-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .finding-row {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10.8px;
+      color: var(--text-body);
+      line-height: 1.28;
+    }
+
+    .finding-bullet {
+      color: var(--violet-accent);
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .roadmap-card {
+      background: #F8FAFC;
+      border: 1px solid var(--border-academic);
+      border-left: 3px solid var(--brand-indigo);
+      border-radius: 4px;
+      padding: 4px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px;
+    }
+
+    .roadmap-header {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--deep-indigo);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .roadmap-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      color: var(--text-body);
+      line-height: 1.26;
+    }
+
+    /* ROW 2 - COL 4: REFERENCES & FOOTER */
+    .references-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5px;
+    }
+
+    .ref-entry {
+      display: flex;
+      gap: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      line-height: 1.26;
+      color: var(--text-body);
+    }
+
+    .ref-index {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.8px;
+      font-weight: 700;
+      color: var(--primary-indigo);
+      flex-shrink: 0;
+    }
+
+    .ref-content strong {
+      color: var(--navy-dark);
+      font-weight: 600;
+    }
+
+    .ref-content em {
+      font-style: italic;
+      color: var(--brand-indigo);
+    }
+
+    .institutional-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 9.2px;
+      color: var(--text-muted);
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      padding: 3px 5px;
+      line-height: 1.22;
+    }
+
+    .institutional-footer {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Print Optimization */
+    @media print {
+      @page {
+        size: 2000px 1049px landscape;
+        margin: 0;
+      }
+      body {
+        background: transparent;
+      }
+      .poster {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       CANVAS CONTAINER: EXACTLY 2000px x 1049px
+       ============================================================ -->
+  <div class="poster" id="academic-poster">
+
+    <!-- ============================================================
+         INSTITUTIONAL HEADER (Height: 118px)
+         ============================================================ -->
+    <header id="poster-header">
+
+      <!-- Left: Official Institutional Crest & Affiliation -->
+      <div class="header-institution" id="institution-block">
+        <img src="bvdu_white_text_logo.png" alt="Bharati Vidyapeeth (Deemed to be University)" class="bvdu-logo">
+        <div class="inst-dept">Department of Engineering and Technology, Navi Mumbai</div>
+      </div>
+
+      <!-- Center: Research Paper Title -->
+      <div class="header-center" id="title-block">
+        <h1 class="header-paper-title" id="paper-title">SpendSense: On-Device Deep Learning for Financial Telemetry</h1>
+        <div class="header-paper-subtitle">A Privacy-Preserving Multi-Task Inference Framework for Expense Optimization in India's UPI Ecosystem</div>
+      </div>
+
+      <!-- Right: Research Investigators & Faculty Guidance -->
+      <div class="header-authors" id="investigators-block">
+        <div class="authors-heading">Research Investigators</div>
+        <div class="authors-names">Aayush Pandey, Ansh Verma, Atharva Achare</div>
+        <div class="authors-affil">Dept. of Computer Science &amp; Engineering</div>
+        <div class="authors-guidance">Under the Guidance of: <strong>Dr. Nidhi Sharma</strong> (Guide) &amp; <strong>Prof. Aniket Vajire</strong> (Co-Guide)</div>
+      </div>
+
+    </header>
+
+    <!-- ============================================================
+         MAIN POSTER CONTENT - TWO BALANCED ROWS
+         ============================================================ -->
+    <main class="poster-body">
+
+      <!-- ============================================================
+           ROW 1: ABSTRACT | PROBLEM & PRIOR ART | OBJECTIVES | ARCHITECTURE
+           ============================================================ -->
+      <section class="poster-row" id="row-1">
+
+        <!-- CARD 1: ABSTRACT & CORE SPECIFICATIONS -->
+        <article class="card col-abstract" id="abstract">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">I.</span>
+              <h2 class="section-title">Abstract</h2>
+            </div>
+            <span class="section-field">IEEE Research Summary</span>
+          </div>
+          <div class="card-content">
+            <p class="academic-text">
+              The rapid proliferation of digital payment systems in India, particularly the Unified Payments Interface (UPI), has fragmented individual financial activity across six to eight applications simultaneously, including UPI wallets, credit cards, BNPL platforms, and recurring subscriptions. Empirical studies indicate that <strong>~75% of Indian UPI users report increased overspending</strong> attributable to cashless intangibility. <strong>SpendSense</strong> is a Flutter-based mobile platform that automatically ingests transaction data from bank and UPI SMS notifications on-device, without requiring account linking, password sharing, or cloud connectivity.
+            </p>
+
+            <div class="specs-grid">
+              <div class="spec-item">
+                <span class="spec-label">Execution Target</span>
+                <span class="spec-val">100% On-Device (ARM64)</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Forward Latency</span>
+                <span class="spec-val">0.89 ms (TFLite MTL)</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Network Exposure</span>
+                <span class="spec-val">Zero Telemetry Packets</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Model Footprint</span>
+                <span class="spec-val">1.04 MB (0.29 MB INT8)</span>
+              </div>
+            </div>
+
+            <p class="academic-text">
+              A single multi-task TensorFlow Lite model simultaneously predicts merchant identity (99.86%), 15 canonical spending categories (96.76%), and payment mode in a single forward pass, coupled with proactive 80% solvency guardrails. SpendSense demonstrates that an offline-first edge architecture delivers intelligent, India-specific financial insights at zero recurring infrastructure cost.
+            </p>
+
+            <div class="abstract-keywords">
+              <strong>Index Terms:</strong> Personal Finance Management, UPI, Transaction Categorisation, Multi-Task Learning, On-Device Machine Learning, TensorFlow Lite, SMS Parsing, Flutter, Privacy-Preserving Computing.
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 2: PROBLEM CONTEXT & COMPARATIVE TAXONOMY (ZERO OVERFLOW) -->
+        <article class="card col-intro" id="prior-art">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">II.</span>
+              <h2 class="section-title">Problem &amp; Prior Art</h2>
+            </div>
+            <span class="section-field">Comparative Taxonomy</span>
+          </div>
+          <div class="card-content">
+            <p class="academic-text">
+              Frictionless micropayments decouple consumption from perceived financial depletion. Modern consumers distribute expenditures across isolated silos (GPay, PhonePe, Paytm, HDFC/SBI cards, LazyPay), blinding users to aggregate cash velocity and precluding proactive intervention.
+            </p>
+
+            <div class="table-caption">TABLE I. Comparison of Existing Financial Platforms with SpendSense</div>
+            <table class="academic-table">
+              <colgroup>
+                <col style="width: 27%;">
+                <col style="width: 21%;">
+                <col style="width: 22%;">
+                <col style="width: 30%;">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Walnut / Axio</th>
+                  <th>Money View</th>
+                  <th>SpendSense</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Ingestion</strong></td>
+                  <td>Cloud SMS</td>
+                  <td>Cloud SMS</td>
+                  <td><strong>Local SMS</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Storage &amp; Privacy</strong></td>
+                  <td>Remote Cloud</td>
+                  <td>Remote Cloud</td>
+                  <td><strong>Local SQLite</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Categorization</strong></td>
+                  <td>Cloud Server</td>
+                  <td>Rule / Cloud</td>
+                  <td><strong>On-Device MTL</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>UPI VPA Support</strong></td>
+                  <td>Partial Regex</td>
+                  <td>Partial Regex</td>
+                  <td><strong>Regex + MTL</strong></td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>Solvency Guard</strong></td>
+                  <td>Post-hoc</td>
+                  <td>Basic Limit</td>
+                  <td><strong>80% Guard</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Cloud Telemetry</strong></td>
+                  <td>High (Lending)</td>
+                  <td>High (Ads)</td>
+                  <td><strong>Zero (Private)</strong></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="problem-highlight-box">
+              <strong>Critical Vulnerability of Prevailing Art:</strong> Commercial PFM platforms transmit raw transaction strings, balances, and merchant metadata to third-party cloud aggregators, exposing consumers to severe privacy leakage and unsolicited loan marketing.
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 3: RESEARCH OBJECTIVES & MATHEMATICAL FORMULATION (100% VISIBLE) -->
+        <article class="card col-objectives" id="objectives">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">III.</span>
+              <h2 class="section-title">Objectives &amp; Formulation</h2>
+            </div>
+            <span class="section-field">Formal Methodology</span>
+          </div>
+          <div class="card-content">
+            
+            <!-- Compact Unified Research Objectives Card -->
+            <div class="objectives-unified-card">
+              <div class="obj-row">
+                <div class="obj-header-line">
+                  <span class="obj-title">[RO-1] Zero-Knowledge Ingestion</span>
+                  <span class="obj-label">Zero Cloud</span>
+                </div>
+                <div class="obj-desc">Intercept and normalize bank &amp; UPI SMS notifications on-device across 30+ Indian banks with 0 credential harvesting.</div>
+              </div>
+              <div class="obj-row">
+                <div class="obj-header-line">
+                  <span class="obj-title">[RO-2] Joint Multi-Task Neural Classification</span>
+                  <span class="obj-label">0.89 ms Pass</span>
+                </div>
+                <div class="obj-desc">Shared-backbone neural network predicting merchant (99.86%), category (96.76%), and payment mode in a single pass.</div>
+              </div>
+              <div class="obj-row">
+                <div class="obj-header-line">
+                  <span class="obj-title">[RO-3] Proactive 80% Solvency Governance</span>
+                  <span class="obj-label">Deterministic NLG</span>
+                </div>
+                <div class="obj-desc">Edge rule engine intercepting 80% budget depletion with deterministic plain-English explanations (zero LLM token cost).</div>
+              </div>
+            </div>
+
+            <!-- Engineering Design Envelope Table -->
+            <div>
+              <div class="table-caption">Engineering Design Envelope vs. Measured Bounds</div>
+              <table class="specs-table-compact">
+                <colgroup>
+                  <col style="width: 36%;">
+                  <col style="width: 28%;">
+                  <col style="width: 36%;">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Dimension</th>
+                    <th>Target SLA</th>
+                    <th>SpendSense Measured</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>RAM Working Set</td>
+                    <td>&lt; 25.0 MB RAM</td>
+                    <td><strong>14.2 MB RAM</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Inference Latency</td>
+                    <td>&lt; 5.00 ms</td>
+                    <td><strong>0.89 ms (ARM64)</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Cloud Telemetry</td>
+                    <td>0 Server Calls</td>
+                    <td><strong>0 Bytes (Air-Gapped)</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mathematical Formulation -->
+            <div class="math-panel">
+              <div class="table-caption">Masked Multi-Task Cross-Entropy Loss Formulation</div>
+              <div class="math-formula">
+                L<sub>total</sub> = &Sigma;<sub>k=1</sub><sup>K</sup> m<sub>k</sub> &middot; &lambda;<sub>k</sub> &middot; [ - &Sigma;<sub>c=1</sub><sup>C<sub>k</sub></sup> y<sub>k,c</sub> &middot; log(p&#770;<sub>k,c</sub>) ]
+              </div>
+              <div class="math-desc">
+                where <em>m<sub>k</sub> &isin; {0, 1}</em> is a binary task mask accommodating heterogeneous multi-bank label density, and <em>&lambda;<sub>k</sub></em> denotes task weighting.
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- CARD 4: RE-ENGINEERED SYSTEM ARCHITECTURE SCHEMATIC (575px WIDTH) -->
+        <article class="card col-arch" id="architecture">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">IV.</span>
+              <h2 class="section-title">System Architecture</h2>
+            </div>
+            <span class="section-field">4-Tier Edge Topology</span>
+          </div>
+          <div class="card-content">
+            
+            <div class="diagram-card-container">
+              <!-- High-Fidelity Technical Architecture Vector Schematic (viewBox: 530 x 308) -->
+              <svg viewBox="0 0 530 308" style="width: 100%; height: 93%; display: block;" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <!-- Tier Header Gradients -->
+                  <linearGradient id="t1HeaderGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#0B1329"/>
+                    <stop offset="100%" stop-color="#1E1B4B"/>
+                  </linearGradient>
+                  <linearGradient id="t2HeaderGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#1E1B4B"/>
+                    <stop offset="100%" stop-color="#312E81"/>
+                  </linearGradient>
+                  <linearGradient id="t3HeaderGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#312E81"/>
+                    <stop offset="100%" stop-color="#4338CA"/>
+                  </linearGradient>
+                  <linearGradient id="t4HeaderGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#4338CA"/>
+                    <stop offset="100%" stop-color="#6D28D9"/>
+                  </linearGradient>
+
+                  <!-- Accent Gradients for Components -->
+                  <linearGradient id="glowMTL" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#EEF2FF"/>
+                    <stop offset="100%" stop-color="#E0E7FF"/>
+                  </linearGradient>
+                  <linearGradient id="glowDB" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#F8FAFC"/>
+                    <stop offset="100%" stop-color="#EEF2FF"/>
+                  </linearGradient>
+                  
+                  <!-- Arrow Markers -->
+                  <marker id="busArrow" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto">
+                    <polygon points="0 0, 6 3, 0 6" fill="#4338CA"/>
+                  </marker>
+                  <marker id="violetArrow" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto">
+                    <polygon points="0 0, 6 3, 0 6" fill="#6D28D9"/>
+                  </marker>
+                </defs>
+
+                <!-- Hardware Enclave Perimeter Frame -->
+                <rect x="3" y="3" width="524" height="302" rx="5" fill="#FAFCFF" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="5 3"/>
+                
+                <!-- Security Header Bar -->
+                <rect x="8" y="7" width="514" height="14" rx="2.5" fill="#0F172A"/>
+                <circle cx="16" cy="14" r="3" fill="#10B981"/>
+                <text x="24" y="17.2" fill="#F8FAFC" font-family="'Space Grotesk', sans-serif" font-size="8" font-weight="700" letter-spacing="0.3">ARM64 HARDWARE SECURITY PERIMETER &bull; 100% AIR-GAPPED ON-DEVICE EXECUTION &bull; ZERO CLOUD TELEMETRY</text>
+
+                <!-- ==================== TIER 1: INGESTION ==================== -->
+                <g id="tier1-col">
+                  <!-- Container -->
+                  <rect x="8" y="25" width="114" height="275" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.1"/>
+                  <rect x="8" y="25" width="114" height="24" rx="4" fill="url(#t1HeaderGrad)"/>
+                  <text x="65" y="41" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 1: Ingestion</text>
+
+                  <!-- Block 1: BroadcastReceiver -->
+                  <rect x="13" y="54" width="104" height="43" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="65" y="67" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">BroadcastReceiver</text>
+                  <text x="65" y="79" fill="#475569" font-family="'Inter', sans-serif" font-size="8" text-anchor="middle">Telephony SMS Listener</text>
+                  <rect x="19" y="83" width="92" height="10" rx="2" fill="#EDE9FE"/>
+                  <text x="65" y="90.8" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" text-anchor="middle">SMS_RECEIVED Intent</text>
+
+                  <!-- Block 2: Regex Engine -->
+                  <rect x="13" y="101" width="104" height="50" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="65" y="114" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Deterministic Regex</text>
+                  <text x="65" y="126" fill="#475569" font-family="'Inter', sans-serif" font-size="8" text-anchor="middle">30+ Bank Schemas</text>
+                  <text x="65" y="137" fill="#64748B" font-family="'JetBrains Mono', monospace" font-size="7.5" text-anchor="middle">VPA &bull; Amount &bull; Timestamp</text>
+                  <text x="65" y="146.5" fill="#D97706" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">95+ UPI Patterns</text>
+
+                  <!-- Block 3: Redactor -->
+                  <rect x="13" y="155" width="104" height="43" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="65" y="168" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Boundary Masking</text>
+                  <text x="65" y="180" fill="#475569" font-family="'Inter', sans-serif" font-size="8" text-anchor="middle">PII Token Stripper</text>
+                  <rect x="18" y="184" width="94" height="10.5" rx="2" fill="#FEE2E2"/>
+                  <text x="65" y="192" fill="#B91C1C" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">Redacts Card / OTP</text>
+
+                  <!-- Block 4: Statement Import -->
+                  <rect x="13" y="202" width="104" height="66" rx="3" fill="#F1F5F9" stroke="#94A3B8"/>
+                  <text x="65" y="216" fill="#1E1B4B" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Batch Statement</text>
+                  <text x="65" y="228" fill="#475569" font-family="'Inter', sans-serif" font-size="8" text-anchor="middle">CSV / PDF Parsing Engine</text>
+                  <text x="65" y="240" fill="#64748B" font-family="'JetBrains Mono', monospace" font-size="7.5" text-anchor="middle">HDFC, SBI, ICICI, Axis</text>
+                  <rect x="19" y="247" width="92" height="14" rx="2" fill="#DCFCE7" stroke="#86EFAC"/>
+                  <text x="65" y="257.5" fill="#15803D" font-family="'JetBrains Mono', monospace" font-size="7.8" font-weight="800" text-anchor="middle">&bull; ZERO CLOUD &bull;</text>
+
+                  <!-- Tier Footer -->
+                  <rect x="13" y="272" width="104" height="21" rx="2.5" fill="#0F172A"/>
+                  <text x="65" y="285.5" fill="#FDE68A" font-family="'Space Grotesk', sans-serif" font-size="8.5" font-weight="700" text-anchor="middle">Native OS Boundary</text>
+                </g>
+
+                <!-- Data Connector 1 -> 2 -->
+                <path d="M122 126 H132" stroke="#4338CA" stroke-width="1.8" marker-end="url(#busArrow)"/>
+                <rect x="122.5" y="113" width="9" height="10" rx="1.5" fill="#EDE9FE"/>
+                <text x="127" y="120.5" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="6" font-weight="700" text-anchor="middle">T</text>
+
+                <!-- ==================== TIER 2: TFLITE MTL ENGINE ==================== -->
+                <g id="tier2-col">
+                  <!-- Container -->
+                  <rect x="133" y="25" width="130" height="275" rx="4" fill="#FFFFFF" stroke="#818CF8" stroke-width="1.2"/>
+                  <rect x="133" y="25" width="130" height="24" rx="4" fill="url(#t2HeaderGrad)"/>
+                  <text x="198" y="41" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 2: TFLite MTL</text>
+
+                  <!-- Embedding Trunk -->
+                  <rect x="138" y="54" width="120" height="38" rx="3" fill="url(#glowMTL)" stroke="#818CF8"/>
+                  <text x="198" y="67" fill="#1E1B4B" font-family="'Space Grotesk', sans-serif" font-size="9.2" font-weight="700" text-anchor="middle">Shared Backbone</text>
+                  <text x="198" y="78" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="600" text-anchor="middle">Char/Word Embeddings</text>
+                  <text x="198" y="87" fill="#475569" font-family="'JetBrains Mono', monospace" font-size="7.5" text-anchor="middle">Tensor: [1, 128]</text>
+
+                  <!-- 4 MTL Heads -->
+                  <!-- Head 1: Merchant -->
+                  <rect x="138" y="96" width="120" height="33" rx="2.5" fill="#F0FDF4" stroke="#86EFAC"/>
+                  <text x="198" y="109" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="8.8" font-weight="700" text-anchor="middle">Head 1: Merchant ID</text>
+                  <text x="198" y="122" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="800" text-anchor="middle">734 Classes (99.86%)</text>
+
+                  <!-- Head 2: Category -->
+                  <rect x="138" y="133" width="120" height="33" rx="2.5" fill="#EEF2FF" stroke="#A5B4FC"/>
+                  <text x="198" y="146" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="8.8" font-weight="700" text-anchor="middle">Head 2: Category</text>
+                  <text x="198" y="159" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="800" text-anchor="middle">15 Canonical (96.76%)</text>
+
+                  <!-- Head 3: Payment Mode -->
+                  <rect x="138" y="170" width="120" height="30" rx="2.5" fill="#FAF5FF" stroke="#DDD6FE"/>
+                  <text x="198" y="182" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="8.8" font-weight="700" text-anchor="middle">Head 3: Payment Mode</text>
+                  <text x="198" y="194" fill="#6D28D9" font-family="'JetBrains Mono', monospace" font-size="7.8" font-weight="600" text-anchor="middle">UPI / NetB / Card / BNPL</text>
+
+                  <!-- Head 4: Direction -->
+                  <rect x="138" y="204" width="120" height="30" rx="2.5" fill="#FFFBEB" stroke="#FDE68A"/>
+                  <text x="198" y="216" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="8.8" font-weight="700" text-anchor="middle">Head 4: Direction</text>
+                  <text x="198" y="228" fill="#D97706" font-family="'JetBrains Mono', monospace" font-size="7.8" font-weight="600" text-anchor="middle">Debit / Credit Binary</text>
+
+                  <!-- MTL Performance Badge -->
+                  <rect x="138" y="238" width="120" height="31" rx="3" fill="#EDE9FE" stroke="#C4B5FD"/>
+                  <text x="198" y="251" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="800" text-anchor="middle">0.89 ms &bull; 1.04 MB</text>
+                  <text x="198" y="263" fill="#6D28D9" font-family="'Space Grotesk', sans-serif" font-size="8.2" font-weight="700" text-anchor="middle">1,125 FPS Throughput</text>
+
+                  <!-- Tier Footer -->
+                  <rect x="138" y="272" width="120" height="21" rx="2.5" fill="#1E1B4B"/>
+                  <text x="198" y="285.5" fill="#A5B4FC" font-family="'Space Grotesk', sans-serif" font-size="8.5" font-weight="700" text-anchor="middle">TFLite Runtime (NEON)</text>
+                </g>
+
+                <!-- Data Connector 2 -> 3 -->
+                <path d="M263 150 H272" stroke="#4338CA" stroke-width="1.8" marker-end="url(#busArrow)"/>
+                <rect x="263.5" y="137" width="9" height="10" rx="1.5" fill="#EDE9FE"/>
+                <text x="268" y="144.5" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="6" font-weight="700" text-anchor="middle">L</text>
+
+                <!-- ==================== TIER 3: PERSISTENCE & GOVERNANCE ==================== -->
+                <g id="tier3-col">
+                  <!-- Container -->
+                  <rect x="273" y="25" width="124" height="275" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.1"/>
+                  <rect x="273" y="25" width="124" height="24" rx="4" fill="url(#t3HeaderGrad)"/>
+                  <text x="335" y="41" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 3: Persistence</text>
+
+                  <!-- Block 1: SQLite Encrypted -->
+                  <rect x="278" y="54" width="114" height="45" rx="3" fill="url(#glowDB)" stroke="#818CF8"/>
+                  <text x="335" y="67" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Local SQLite DB</text>
+                  <text x="335" y="79" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">SQLCipher AES-256</text>
+                  <text x="335" y="91" fill="#059669" font-family="'Inter', sans-serif" font-size="7.8" font-weight="600" text-anchor="middle">Encrypted Relational Store</text>
+
+                  <!-- Block 2: Solvency Guard -->
+                  <rect x="278" y="103" width="114" height="46" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="335" y="116" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">80% Solvency Guard</text>
+                  <text x="335" y="128" fill="#DC2626" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="800" text-anchor="middle">Threshold Interceptor</text>
+                  <text x="335" y="141" fill="#475569" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">Proactive Alert Gate</text>
+
+                  <!-- Block 3: Recurrence Auditor -->
+                  <rect x="278" y="153" width="114" height="44" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="335" y="166" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Recurrence Engine</text>
+                  <text x="335" y="178" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="8" text-anchor="middle">Subscription Auditor</text>
+                  <text x="335" y="189" fill="#475569" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">Periodicity Detector</text>
+
+                  <!-- Block 4: Overspending Risk Model -->
+                  <rect x="278" y="201" width="114" height="67" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="335" y="214" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Overspending Risk</text>
+                  <text x="335" y="227" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="800" text-anchor="middle">Random Forest (96.88%)</text>
+                  <text x="335" y="240" fill="#475569" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">N = 100 Decision Trees</text>
+                  <text x="335" y="254" fill="#64748B" font-family="'JetBrains Mono', monospace" font-size="7.5" text-anchor="middle">Low / Med / High Distress</text>
+
+                  <!-- Tier Footer -->
+                  <rect x="278" y="272" width="114" height="21" rx="2.5" fill="#312E81"/>
+                  <text x="335" y="285.5" fill="#DDD6FE" font-family="'Space Grotesk', sans-serif" font-size="8.5" font-weight="700" text-anchor="middle">Local SQL Storage</text>
+                </g>
+
+                <!-- Data Connector 3 -> 4 -->
+                <path d="M397 150 H406" stroke="#6D28D9" stroke-width="1.8" marker-end="url(#violetArrow)"/>
+                <rect x="397.5" y="137" width="9" height="10" rx="1.5" fill="#FAF5FF"/>
+                <text x="402" y="144.5" fill="#6D28D9" font-family="'JetBrains Mono', monospace" font-size="6" font-weight="700" text-anchor="middle">S</text>
+
+                <!-- ==================== TIER 4: CLIENT PRESENTATION & NLG ==================== -->
+                <g id="tier4-col">
+                  <!-- Container -->
+                  <rect x="407" y="25" width="115" height="275" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.1"/>
+                  <rect x="407" y="25" width="115" height="24" rx="4" fill="url(#t4HeaderGrad)"/>
+                  <text x="464" y="41" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 4: Client</text>
+
+                  <!-- Block 1: Flutter Client -->
+                  <rect x="412" y="54" width="105" height="54" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="464" y="67" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Flutter Client</text>
+                  <text x="464" y="79" fill="#475569" font-family="'Inter', sans-serif" font-size="8" text-anchor="middle">Riverpod Architecture</text>
+                  <text x="464" y="90" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="7.5" text-anchor="middle">Reactive Telemetry</text>
+                  <text x="464" y="100" fill="#64748B" font-family="'JetBrains Mono', monospace" font-size="7.2" text-anchor="middle">Sub-ms UI Stream</text>
+
+                  <!-- Block 2: NLG Generator -->
+                  <rect x="412" y="112" width="105" height="74" rx="3" fill="#F8FAFC" stroke="#CBD5E1"/>
+                  <text x="464" y="125" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Template NLG</text>
+                  <text x="464" y="137" fill="#475569" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">Deterministic Slot</text>
+                  <text x="464" y="148" fill="#475569" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">Filling Synthesis</text>
+                  <rect x="417" y="153" width="95" height="14" rx="2" fill="#DCFCE7"/>
+                  <text x="464" y="163.5" fill="#15803D" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="800" text-anchor="middle">Zero LLM Costs</text>
+                  <text x="464" y="178" fill="#64748B" font-family="'Inter', sans-serif" font-size="7.5" text-anchor="middle">Weekly Insights</text>
+
+                  <!-- Block 3: Alert Daemon -->
+                  <rect x="412" y="190" width="105" height="78" rx="3" fill="#FAF5FF" stroke="#DDD6FE"/>
+                  <text x="464" y="204" fill="#6D28D9" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">Alert Daemon</text>
+                  <text x="464" y="217" fill="#475569" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">WorkManager Worker</text>
+                  <text x="464" y="229" fill="#6D28D9" font-family="'Inter', sans-serif" font-size="7.8" text-anchor="middle">Background Alerts</text>
+                  <rect x="417" y="235" width="95" height="14" rx="2" fill="#EDE9FE"/>
+                  <text x="464" y="245.5" fill="#6D28D9" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="800" text-anchor="middle">80% Limits Gate</text>
+
+                  <!-- Tier Footer -->
+                  <rect x="412" y="272" width="105" height="21" rx="2.5" fill="#4338CA"/>
+                  <text x="464" y="285.5" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="8.5" font-weight="700" text-anchor="middle">Flutter 3.x Engine</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="figure-caption">
+              <strong>Fig. 1.</strong> Formal 4-Tier On-Device Architecture: Ingestion &rarr; Multi-Task TFLite MTL &rarr; Encrypted Relational Store &rarr; Flutter UI.
+            </div>
+
+          </div>
+        </article>
+
+      </section>
+
+      <!-- ============================================================
+           ROW 2: METHODOLOGY | BENCHMARKS & EVALUATION | CONCLUSION | REFERENCES
+           ============================================================ -->
+      <section class="poster-row" id="row-2">
+
+        <!-- CARD 5: METHODOLOGY & FEATURE ENGINEERING (ZERO OVERFLOW) -->
+        <article class="card col-methodology" id="methodology">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">V.</span>
+              <h2 class="section-title">Methodology &amp; Features</h2>
+            </div>
+            <span class="section-field">Corpus N = 107,455</span>
+          </div>
+          <div class="card-content">
+            
+            <!-- Pipeline Steps: Stacked One Below One -->
+            <div class="pipeline-vertical-list">
+              <div class="pipeline-step-row">
+                <div class="step-badge">1</div>
+                <div class="step-main">
+                  <div class="step-head">
+                    <span class="step-title">Ingest &amp; Boundary Masking</span>
+                    <span class="step-tech">BroadcastReceiver</span>
+                  </div>
+                  <div class="step-desc">Intercepts incoming SMS locally; masks PAN, CVV, and OTP credentials.</div>
+                </div>
+              </div>
+
+              <div class="pipeline-step-row">
+                <div class="step-badge">2</div>
+                <div class="step-main">
+                  <div class="step-head">
+                    <span class="step-title">Deterministic Regex Normalization</span>
+                    <span class="step-tech">30+ Indian Banks</span>
+                  </div>
+                  <div class="step-desc">Extracts debits, credits, timestamps, and VPA strings across 95+ UPI formats.</div>
+                </div>
+              </div>
+
+              <div class="pipeline-step-row">
+                <div class="step-badge">3</div>
+                <div class="step-main">
+                  <div class="step-head">
+                    <span class="step-title">Joint Multi-Task TFLite MTL</span>
+                    <span class="step-tech">0.89 ms Pass</span>
+                  </div>
+                  <div class="step-desc">Predicts merchant identity (99.86%) and canonical category (96.76%) in a single pass.</div>
+                </div>
+              </div>
+
+              <div class="pipeline-step-row">
+                <div class="step-badge">4</div>
+                <div class="step-main">
+                  <div class="step-head">
+                    <span class="step-title">Relational Sync &amp; Solvency Alert</span>
+                    <span class="step-tech">SQLCipher AES-256</span>
+                  </div>
+                  <div class="step-desc">Stores to local SQLite, tracks 80% budget utilization, and audits recurring fees.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dataset Corpus Partition Table -->
+            <div>
+              <div class="table-caption">TABLE III. Augmented Indian Transaction Corpus Partition</div>
+              <table class="specs-table-compact">
+                <colgroup>
+                  <col style="width: 36%;">
+                  <col style="width: 20%;">
+                  <col style="width: 20%;">
+                  <col style="width: 24%;">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Partition</th>
+                    <th>Samples</th>
+                    <th>Merchants</th>
+                    <th>Categories</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Training Set (80%)</td>
+                    <td>85,925</td>
+                    <td>734</td>
+                    <td>15 Canonical</td>
+                  </tr>
+                  <tr>
+                    <td>Validation Set (10%)</td>
+                    <td>10,765</td>
+                    <td>734</td>
+                    <td>15 Canonical</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>Total Corpus</strong></td>
+                    <td><strong>107,455</strong></td>
+                    <td><strong>734</strong></td>
+                    <td><strong>15 Canonical</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Dual-Column Feature Weights Grid: Complete Visibility, Zero Overflow -->
+            <div class="sub-box">
+              <span class="sub-box-title">Engineered Behavioral Signals &amp; Feature Weights</span>
+              <div class="features-grid-dual">
+                
+                <div class="feature-bar-unit">
+                  <div class="feature-bar-label">
+                    <span style="font-family: 'JetBrains Mono', monospace; color: var(--navy-dark); font-weight: 600;">entertainment_ratio</span>
+                    <span style="font-weight: 700; color: var(--primary-indigo);">36.2%</span>
+                  </div>
+                  <div class="feature-bar-track">
+                    <div class="feature-bar-fill" style="width: 36.2%; background: var(--primary-indigo);"></div>
+                  </div>
+                </div>
+
+                <div class="feature-bar-unit">
+                  <div class="feature-bar-label">
+                    <span style="font-family: 'JetBrains Mono', monospace; color: var(--navy-dark); font-weight: 600;">pending_debt_count</span>
+                    <span style="font-weight: 700; color: var(--primary-indigo);">35.1%</span>
+                  </div>
+                  <div class="feature-bar-track">
+                    <div class="feature-bar-fill" style="width: 35.1%; background: var(--primary-indigo);"></div>
+                  </div>
+                </div>
+
+                <div class="feature-bar-unit">
+                  <div class="feature-bar-label">
+                    <span style="font-family: 'JetBrains Mono', monospace; color: var(--navy-dark); font-weight: 600;">savings_ratio</span>
+                    <span style="font-weight: 700; color: var(--brand-indigo);">29.3%</span>
+                  </div>
+                  <div class="feature-bar-track">
+                    <div class="feature-bar-fill" style="width: 29.3%; background: var(--brand-indigo);"></div>
+                  </div>
+                </div>
+
+                <div class="feature-bar-unit">
+                  <div class="feature-bar-label">
+                    <span style="font-family: 'JetBrains Mono', monospace; color: var(--navy-dark); font-weight: 600;">spend_ratio</span>
+                    <span style="font-weight: 700; color: var(--brand-indigo);">23.6%</span>
+                  </div>
+                  <div class="feature-bar-track">
+                    <div class="feature-bar-fill" style="width: 23.6%; background: var(--brand-indigo);"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- CARD 6: RESULTS & EXPERIMENTAL EVALUATION -->
+        <article class="card col-results" id="evaluation">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">VI.</span>
+              <h2 class="section-title">Experimental Evaluation</h2>
+            </div>
+            <span class="section-field">ARM64 Hardware &bull; N = 480</span>
+          </div>
+          <div class="card-content">
+            
+            <div class="results-grid">
+              
+              <!-- Left: Scientific Confusion Matrix & Validation Findings -->
+              <div class="results-panel-left">
+                <div class="sub-box">
+                  <span class="sub-box-title">Overspending Risk Matrix (N = 480)</span>
+                  
+                  <!-- Heatmap SVG -->
+                  <svg width="236" height="136" viewBox="0 0 236 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Column Labels -->
+                    <text x="132" y="11" fill="#0F172A" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="700" text-anchor="middle">PREDICTED CLASS</text>
+                    <text x="72" y="24" fill="#312E81" font-family="'JetBrains Mono', monospace" font-size="8.2" font-weight="700" text-anchor="middle">Low (0)</text>
+                    <text x="132" y="24" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="8.2" font-weight="700" text-anchor="middle">Med (1)</text>
+                    <text x="192" y="24" fill="#991B1B" font-family="'JetBrains Mono', monospace" font-size="8.2" font-weight="700" text-anchor="middle">High (2)</text>
+
+                    <!-- Row Labels -->
+                    <text x="18" y="48" fill="#312E81" font-family="'JetBrains Mono', monospace" font-size="8.2" font-weight="700" text-anchor="middle">Low</text>
+                    <text x="18" y="79" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="8.2" font-weight="700" text-anchor="middle">Med</text>
+                    <text x="18" y="110" fill="#991B1B" font-family="'JetBrains Mono', monospace" font-size="8.2" font-weight="700" text-anchor="middle">High</text>
+
+                    <!-- Row 1: Low -->
+                    <rect x="44" y="32" width="56" height="25" rx="3" fill="#1E1B4B" stroke="#312E81" stroke-width="1"/>
+                    <text x="72" y="48" fill="#FFFFFF" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" text-anchor="middle">85</text>
+
+                    <rect x="104" y="32" width="56" height="25" rx="3" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+                    <text x="132" y="48" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" text-anchor="middle">4</text>
+
+                    <rect x="164" y="32" width="56" height="25" rx="3" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+                    <text x="192" y="48" fill="#94A3B8" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">0</text>
+
+                    <!-- Row 2: Med -->
+                    <rect x="44" y="63" width="56" height="25" rx="3" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+                    <text x="72" y="79" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" text-anchor="middle">10</text>
+
+                    <rect x="104" y="63" width="56" height="25" rx="3" fill="#4338CA" stroke="#312E81" stroke-width="1"/>
+                    <text x="132" y="79" fill="#FFFFFF" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" text-anchor="middle">54</text>
+
+                    <rect x="164" y="63" width="56" height="25" rx="3" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+                    <text x="192" y="79" fill="#94A3B8" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">0</text>
+
+                    <!-- Row 3: High -->
+                    <rect x="44" y="94" width="56" height="25" rx="3" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+                    <text x="72" y="110" fill="#94A3B8" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">0</text>
+
+                    <rect x="104" y="94" width="56" height="25" rx="3" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1"/>
+                    <text x="132" y="110" fill="#D97706" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" text-anchor="middle">1</text>
+
+                    <rect x="164" y="94" width="56" height="25" rx="3" fill="#581C87" stroke="#3B0764" stroke-width="1"/>
+                    <text x="192" y="110" fill="#FFFFFF" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" text-anchor="middle">326</text>
+                  </svg>
+                  
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 8.8px; color: var(--text-muted); text-align: center; margin-top: 3px;">
+                    High Risk Precision: <strong style="color: #059669;">100.0%</strong> (326/326) &bull; Recall: <strong style="color: #059669;">99.69%</strong>
+                  </div>
+                </div>
+
+                <div class="confusion-highlight-box">
+                  <span class="confusion-highlight-title">Zero Critical False Negatives</span>
+                  <div class="confusion-highlight-desc">
+                    Model achieves <strong>96.88% overall accuracy</strong> (465/480). Critically, <strong>0 high-risk</strong> overspending events were misclassified as low-risk, ensuring reliable preventative intervention.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Benchmarks Table & Class Breakdown -->
+              <div class="results-panel-right">
+                
+                <div>
+                  <div class="table-caption">TABLE IV. On-Device TFLite Mobile Benchmarks on ARM64</div>
+                  <table class="benchmark-table">
+                    <colgroup>
+                      <col style="width: 25%;">
+                      <col style="width: 14%;">
+                      <col style="width: 15%;">
+                      <col style="width: 12%;">
+                      <col style="width: 17%;">
+                      <col style="width: 17%;">
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th>Format</th>
+                        <th>Size</th>
+                        <th>Latency</th>
+                        <th>FPS</th>
+                        <th>Cat. Acc</th>
+                        <th>Merch. Acc</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="highlight-row">
+                        <td><strong>Float32 (Base)</strong></td>
+                        <td>1.04 MB</td>
+                        <td><strong>0.89 ms</strong></td>
+                        <td>1125</td>
+                        <td><strong>96.76%</strong></td>
+                        <td><strong>99.86%</strong></td>
+                      </tr>
+                      <tr>
+                        <td>Dynamic Range</td>
+                        <td>0.38 MB</td>
+                        <td>0.62 ms</td>
+                        <td>1612</td>
+                        <td>96.41%</td>
+                        <td>99.52%</td>
+                      </tr>
+                      <tr>
+                        <td>INT8 Quantized</td>
+                        <td>0.29 MB</td>
+                        <td>0.47 ms</td>
+                        <td>2127</td>
+                        <td>95.89%</td>
+                        <td>99.10%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Per-Class Diagnostic Performance Table (Fixed layout, Zero truncation) -->
+                <div>
+                  <div class="table-caption">TABLE V. Risk Diagnostic Performance Breakdown</div>
+                  <table class="diagnostic-table">
+                    <colgroup>
+                      <col style="width: 40%;">
+                      <col style="width: 20%;">
+                      <col style="width: 20%;">
+                      <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th>Risk Tier</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1-Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Low Risk (Class 0)</td>
+                        <td>89.47%</td>
+                        <td>95.51%</td>
+                        <td>92.39%</td>
+                      </tr>
+                      <tr>
+                        <td>Med Risk (Class 1)</td>
+                        <td>91.50%</td>
+                        <td>84.38%</td>
+                        <td>87.80%</td>
+                      </tr>
+                      <tr class="highlight-row">
+                        <td><strong>High Risk (Class 2)</strong></td>
+                        <td><strong>100.0%</strong></td>
+                        <td><strong>99.69%</strong></td>
+                        <td><strong>99.85%</strong></td>
+                      </tr>
+                      <tr>
+                        <td>Budget Exhaustion (GBM)</td>
+                        <td>95.80%</td>
+                        <td>67.90%</td>
+                        <td>79.40%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Full-Width Bottom KPI Deck spanning symmetrically across Card VI -->
+            <div class="kpi-deck">
+              <div class="kpi-tile">
+                <span class="kpi-number">96.88%</span>
+                <span class="kpi-tag">Risk Accuracy</span>
+              </div>
+              <div class="kpi-tile">
+                <span class="kpi-number">0.89 ms</span>
+                <span class="kpi-tag">ARM64 Latency</span>
+              </div>
+              <div class="kpi-tile">
+                <span class="kpi-number">1.04 MB</span>
+                <span class="kpi-tag">Model Footprint</span>
+              </div>
+              <div class="kpi-tile">
+                <span class="kpi-number">1,125</span>
+                <span class="kpi-tag">Peak FPS Rate</span>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- CARD 7: CONCLUSION & BEHAVIORAL IMPACT -->
+        <article class="card col-conclusion" id="conclusion">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">VII.</span>
+              <h2 class="section-title">Conclusion &amp; Impact</h2>
+            </div>
+            <span class="section-field">Scientific Takeaways</span>
+          </div>
+          <div class="card-content">
+            <p class="academic-text">
+              SpendSense demonstrates that an autonomous, offline-first personal financial framework delivers state-of-the-art telemetry and proactive behavioral guidance in India's high-velocity UPI ecosystem. It eliminates the privacy risks and credential scraping inherent to cloud PFM platforms while operating at zero recurring server cost.
+            </p>
+
+            <div class="findings-card">
+              <span class="findings-header">Key Architectural &amp; Behavioral Contributions</span>
+              <div class="finding-row">
+                <span class="finding-bullet">&bull;</span>
+                <span><strong>Zero-Cloud Telemetry:</strong> 100% on-device SQLite persistence protects credentials and transaction logs from server scraping.</span>
+              </div>
+              <div class="finding-row">
+                <span class="finding-bullet">&bull;</span>
+                <span><strong>Sub-Millisecond Multi-Task ML:</strong> Predicts merchant identity and canonical category in <strong>0.89 ms</strong> via a compressed 1.04 MB model.</span>
+              </div>
+              <div class="finding-row">
+                <span class="finding-bullet">&bull;</span>
+                <span><strong>Proactive Solvency Alerts:</strong> Intercepts category budget depletion at <strong>80% threshold</strong>, mitigating cashless intangibility bias.</span>
+              </div>
+              <div class="finding-row">
+                <span class="finding-bullet">&bull;</span>
+                <span><strong>Zero Recurring Cost:</strong> Entire inference and deterministic NLG run locally with zero server hosting or LLM token overhead.</span>
+              </div>
+            </div>
+
+            <!-- Future Research & Edge Roadmap -->
+            <div class="roadmap-card">
+              <div class="roadmap-header">Future Edge Research Roadmap</div>
+              <div class="roadmap-text">
+                &bull; <strong>Federated Learning:</strong> Decentralized FedAvg updates across client nodes without centralizing raw telemetry.<br>
+                &bull; <strong>Cross-Border UPI:</strong> Multi-currency localized parsing for Singapore PayNow, UAE, and European corridors.
+              </div>
+            </div>
+
+            <p class="academic-text" style="font-size: 11.2px;">
+              By pairing deterministic regex ingestion with a compact multi-task neural network, edge computing protects consumer solvency at zero infrastructure cost.
+            </p>
+          </div>
+        </article>
+
+        <!-- CARD 8: REFERENCES & INSTITUTIONAL FOOTER -->
+        <article class="card col-references" id="references">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="section-num">VIII.</span>
+              <h2 class="section-title">References</h2>
+            </div>
+            <span class="section-field">IEEE Bibliography</span>
+          </div>
+          <div class="card-content">
+            
+            <div class="references-list">
+              <div class="ref-entry">
+                <span class="ref-index">[1]</span>
+                <div class="ref-content">
+                  <strong>H. Dev, R. Gupta, et al.</strong>, "From Cash to Cashless: UPI's Impact on Spending Behavior Among Indian Users," in <em>Proc. ACM CHI</em>, 2024.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[2]</span>
+                <div class="ref-content">
+                  <strong>S. Kumari, et al.</strong>, "LiteMuL: A Lightweight On-Device Sequence Tagger using Multi-task Learning," in <em>Proc. IEEE ICSC</em>, pp. 245-250, 2021.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[3]</span>
+                <div class="ref-content">
+                  <strong>L. Breiman</strong>, "Random Forests," <em>Machine Learning</em>, vol. 45, no. 1, pp. 5-32, 2001.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[4]</span>
+                <div class="ref-content">
+                  <strong>J. H. Friedman</strong>, "Greedy Function Approximation: A Gradient Boosting Machine," <em>The Annals of Statistics</em>, vol. 29, no. 5, 2001.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[5]</span>
+                <div class="ref-content">
+                  <strong>T. Kaiser, A. Lusardi, et al.</strong>, "Financial education affects financial knowledge and behavior," <em>J. Financial Economics</em>, 2022.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[6]</span>
+                <div class="ref-content">
+                  <strong>K. M. Kumar, et al.</strong>, "WONGA: ML-Driven Personal Finance Management &amp; Expense Tracking," in <em>Proc. IEEE ICACCS</em>, pp. 1120-1125, 2023.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[7]</span>
+                <div class="ref-content">
+                  <strong>N. V. Chawla, et al.</strong>, "SMOTE: Synthetic Minority Over-sampling Technique," <em>J. Artif. Intell. Res.</em>, vol. 16, pp. 321-357, 2002.
+                </div>
+              </div>
+
+              <div class="ref-entry">
+                <span class="ref-index">[8]</span>
+                <div class="ref-content">
+                  <strong>Y. Huang and M. Kou</strong>, "Predicting Financial Distress with Machine Learning," <em>Expert Syst. Appl.</em>, vol. 183, p. 115402, 2021.
+                </div>
+              </div>
+            </div>
+
+            <div class="institutional-note">
+              <strong>Compliance Statement:</strong> All SMS telemetry parsing executes on-device with zero server synchronization. Dataset augmented via bounded perturbation noise.
+            </div>
+
+            <div class="institutional-footer">
+              <span>Department of Computer Science &amp; Engineering</span>
+              <span>Peer-Reviewed Academic Capstone 2026</span>
+            </div>
+
+          </div>
+        </article>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

@@ -95,3 +95,17 @@ app.*.map.json
 SpendSense_Project_Report.md
 claude artifacts/
 claude chat.pdf
+
+# Black book documentation & report
+black_book/
+
+# Research paper assets
+paper assets/
+
+# University logos & logo generation scripts
+/*logo*
+*bvdu*
+*BVDU*
+make_logo.ps1
+
+
